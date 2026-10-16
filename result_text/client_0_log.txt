@@ -1,0 +1,566 @@
+[CLIENT 0] Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+[CLIENT 0] /usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py:949: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+[CLIENT 0]   warnings.warn(
+[CLIENT 0] /usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py:949: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+[CLIENT 0]   warnings.warn(
+[CLIENT 0] Gemma's activation function should be approximate GeLU and not exact GeLU.
+[CLIENT 0] Changing the activation function to `gelu_pytorch_tanh`.if you want to use the legacy `gelu`, edit the `model.config` to set `hidden_activation=gelu`   instead of `hidden_act`. See https://github.com/huggingface/transformers/pull/29402 for more details.
+[CLIENT 0] 
+[CLIENT 0] Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]
+[CLIENT 0] Loading checkpoint shards:  50%|█████     | 1/2 [00:07<00:07,  7.84s/it]
+[CLIENT 0] Loading checkpoint shards: 100%|██████████| 2/2 [00:08<00:00,  3.36s/it]
+[CLIENT 0] Loading checkpoint shards: 100%|██████████| 2/2 [00:08<00:00,  4.04s/it]
+[CLIENT 0] Some weights of DistilBertForSequenceClassification were not initialized from the model checkpoint at distilbert-base-uncased and are newly initialized: ['classifier.bias', 'classifier.weight', 'pre_classifier.bias', 'pre_classifier.weight']
+[CLIENT 0] You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+[CLIENT 0] [Client]  dataset size after merge: 48740
+[CLIENT 0] /content/flgenai/text/client_textdata.py:210: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+[CLIENT 0]   scaler = torch.cuda.amp.GradScaler(enabled=torch.cuda.is_available())
+[CLIENT 0] [93mWARNING [0m:   DEPRECATED FEATURE: flwr.client.start_numpy_client() is deprecated. 
+[CLIENT 0] 	Instead, use `flwr.client.start_client()` by ensuring you first call the `.to_client()` method as shown below: 
+[CLIENT 0] 	flwr.client.start_client(
+[CLIENT 0] 		server_address='<IP>:<PORT>',
+[CLIENT 0] 		client=FlowerClient().to_client(), # <-- where FlowerClient is of type flwr.client.NumPyClient object
+[CLIENT 0] 	)
+[CLIENT 0] 	Using `start_numpy_client()` is deprecated.
+[CLIENT 0] 
+[CLIENT 0]             This is a deprecated feature. It will be removed
+[CLIENT 0]             entirely in future versions of Flower.
+[CLIENT 0]         
+[CLIENT 0] Traceback (most recent call last):
+[CLIENT 0]   File "/content/flgenai/text/client_textdata.py", line 376, in <module>
+[CLIENT 0]     fl.client.start_numpy_client(
+[CLIENT 0]     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[CLIENT 0]         server_address="127.0.0.1:9090",
+[CLIENT 0]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[CLIENT 0]         client=NewsClient(),
+[CLIENT 0]         ^^^^^^^^^^^^^^^^^^^^
+[CLIENT 0]     )
+[CLIENT 0]     ^
+[CLIENT 0]   File "/usr/local/lib/python3.13/dist-packages/flwr/client/app.py", line 643, in start_numpy_client
+[CLIENT 0]     start_client(
+[CLIENT 0]     ~~~~~~~~~~~~^
+[CLIENT 0]         server_address=server_address,
+[CLIENT 0]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[CLIENT 0]     ...<4 lines>...
+[CLIENT 0]         transport=transport,
+[CLIENT 0]         ^^^^^^^^^^^^^^^^^^^^
+[CLIENT 0]     )
+[CLIENT 0]     ^
+[CLIENT 0]   File "/usr/local/lib/python3.13/dist-packages/flwr/client/app.py", line 291, in start_client
+[CLIENT 0]     _start_client_internal(
+[CLIENT 0]     ~~~~~~~~~~~~~~~~~~~~~~^
+[CLIENT 0]         server_address=server_address,
+[CLIENT 0]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[CLIENT 0]     ...<8 lines>...
+[CLIENT 0]         max_wait_time=max_wait_time,
+[CLIENT 0]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[CLIENT 0]     )
+[CLIENT 0]     ^
+[CLIENT 0]   File "/usr/local/lib/python3.13/dist-packages/flwr/client/app.py", line 453, in _start_client_internal
+[CLIENT 0]     message = receive()
+[CLIENT 0]   File "/usr/local/lib/python3.13/dist-packages/flwr/client/grpc_client/connection.py", line 138, in receive
+[CLIENT 0]     proto = next(server_message_iterator)
+[CLIENT 0]   File "/usr/local/lib/python3.13/dist-packages/grpc/_channel.py", line 547, in __next__
+[CLIENT 0]     return self._next()
+[CLIENT 0]            ~~~~~~~~~~^^
+[CLIENT 0]   File "/usr/local/lib/python3.13/dist-packages/grpc/_channel.py", line 948, in _next
+[CLIENT 0]     raise self
+[CLIENT 0] grpc._channel._MultiThreadedRendezvous: <_MultiThreadedRendezvous of RPC that terminated with:
+[CLIENT 0] 	status = StatusCode.UNAVAILABLE
+[CLIENT 0] 	details = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:9090: Failed to connect to remote host: Connection refused"
+[CLIENT 0] 	debug_error_string = "UNAVAILABLE:failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:9090: Failed to connect to remote host: Connection refused"
+[CLIENT 0] >
+[CLIENT 0] Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+[CLIENT 0] /usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py:949: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+[CLIENT 0]   warnings.warn(
+[CLIENT 0] /usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py:949: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+[CLIENT 0]   warnings.warn(
+[CLIENT 0] Gemma's activation function should be approximate GeLU and not exact GeLU.
+[CLIENT 0] Changing the activation function to `gelu_pytorch_tanh`.if you want to use the legacy `gelu`, edit the `model.config` to set `hidden_activation=gelu`   instead of `hidden_act`. See https://github.com/huggingface/transformers/pull/29402 for more details.
+[CLIENT 0] 
+[CLIENT 0] Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]
+[CLIENT 0] Loading checkpoint shards:  50%|█████     | 1/2 [00:07<00:07,  7.70s/it]
+[CLIENT 0] Loading checkpoint shards: 100%|██████████| 2/2 [00:07<00:00,  3.29s/it]
+[CLIENT 0] Loading checkpoint shards: 100%|██████████| 2/2 [00:07<00:00,  3.95s/it]
+[CLIENT 0] Some weights of DistilBertForSequenceClassification were not initialized from the model checkpoint at distilbert-base-uncased and are newly initialized: ['classifier.bias', 'classifier.weight', 'pre_classifier.bias', 'pre_classifier.weight']
+[CLIENT 0] You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+[CLIENT 0] [Client]  dataset size after merge: 48740
+[CLIENT 0] /content/flgenai/text/client_textdata.py:210: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+[CLIENT 0]   scaler = torch.cuda.amp.GradScaler(enabled=torch.cuda.is_available())
+[CLIENT 0] [93mWARNING [0m:   DEPRECATED FEATURE: flwr.client.start_numpy_client() is deprecated. 
+[CLIENT 0] 	Instead, use `flwr.client.start_client()` by ensuring you first call the `.to_client()` method as shown below: 
+[CLIENT 0] 	flwr.client.start_client(
+[CLIENT 0] 		server_address='<IP>:<PORT>',
+[CLIENT 0] 		client=FlowerClient().to_client(), # <-- where FlowerClient is of type flwr.client.NumPyClient object
+[CLIENT 0] 	)
+[CLIENT 0] 	Using `start_numpy_client()` is deprecated.
+[CLIENT 0] 
+[CLIENT 0]             This is a deprecated feature. It will be removed
+[CLIENT 0]             entirely in future versions of Flower.
+[CLIENT 0]         
+[CLIENT 0] Traceback (most recent call last):
+[CLIENT 0]   File "/content/flgenai/text/client_textdata.py", line 376, in <module>
+[CLIENT 0]     fl.client.start_numpy_client(
+[CLIENT 0]     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[CLIENT 0]         server_address="127.0.0.1:9090",
+[CLIENT 0]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[CLIENT 0]         client=NewsClient(),
+[CLIENT 0]         ^^^^^^^^^^^^^^^^^^^^
+[CLIENT 0]     )
+[CLIENT 0]     ^
+[CLIENT 0]   File "/usr/local/lib/python3.13/dist-packages/flwr/client/app.py", line 643, in start_numpy_client
+[CLIENT 0]     start_client(
+[CLIENT 0]     ~~~~~~~~~~~~^
+[CLIENT 0]         server_address=server_address,
+[CLIENT 0]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[CLIENT 0]     ...<4 lines>...
+[CLIENT 0]         transport=transport,
+[CLIENT 0]         ^^^^^^^^^^^^^^^^^^^^
+[CLIENT 0]     )
+[CLIENT 0]     ^
+[CLIENT 0]   File "/usr/local/lib/python3.13/dist-packages/flwr/client/app.py", line 291, in start_client
+[CLIENT 0]     _start_client_internal(
+[CLIENT 0]     ~~~~~~~~~~~~~~~~~~~~~~^
+[CLIENT 0]         server_address=server_address,
+[CLIENT 0]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[CLIENT 0]     ...<8 lines>...
+[CLIENT 0]         max_wait_time=max_wait_time,
+[CLIENT 0]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[CLIENT 0]     )
+[CLIENT 0]     ^
+[CLIENT 0]   File "/usr/local/lib/python3.13/dist-packages/flwr/client/app.py", line 453, in _start_client_internal
+[CLIENT 0]     message = receive()
+[CLIENT 0]   File "/usr/local/lib/python3.13/dist-packages/flwr/client/grpc_client/connection.py", line 138, in receive
+[CLIENT 0]     proto = next(server_message_iterator)
+[CLIENT 0]   File "/usr/local/lib/python3.13/dist-packages/grpc/_channel.py", line 547, in __next__
+[CLIENT 0]     return self._next()
+[CLIENT 0]            ~~~~~~~~~~^^
+[CLIENT 0]   File "/usr/local/lib/python3.13/dist-packages/grpc/_channel.py", line 948, in _next
+[CLIENT 0]     raise self
+[CLIENT 0] grpc._channel._MultiThreadedRendezvous: <_MultiThreadedRendezvous of RPC that terminated with:
+[CLIENT 0] 	status = StatusCode.UNAVAILABLE
+[CLIENT 0] 	details = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:9090: Failed to connect to remote host: Connection refused"
+[CLIENT 0] 	debug_error_string = "UNAVAILABLE:failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:9090: Failed to connect to remote host: Connection refused"
+[CLIENT 0] >
+[CLIENT 0] Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+[CLIENT 0] /usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py:949: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+[CLIENT 0]   warnings.warn(
+[CLIENT 0] /usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py:949: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+[CLIENT 0]   warnings.warn(
+[CLIENT 0] Gemma's activation function should be approximate GeLU and not exact GeLU.
+[CLIENT 0] Changing the activation function to `gelu_pytorch_tanh`.if you want to use the legacy `gelu`, edit the `model.config` to set `hidden_activation=gelu`   instead of `hidden_act`. See https://github.com/huggingface/transformers/pull/29402 for more details.
+[CLIENT 0] 
+[CLIENT 0] Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]
+[CLIENT 0] Loading checkpoint shards:  50%|█████     | 1/2 [00:07<00:07,  7.56s/it]
+[CLIENT 0] Loading checkpoint shards: 100%|██████████| 2/2 [00:07<00:00,  3.24s/it]
+[CLIENT 0] Loading checkpoint shards: 100%|██████████| 2/2 [00:07<00:00,  3.89s/it]
+[CLIENT 0] Some weights of DistilBertForSequenceClassification were not initialized from the model checkpoint at distilbert-base-uncased and are newly initialized: ['classifier.bias', 'classifier.weight', 'pre_classifier.bias', 'pre_classifier.weight']
+[CLIENT 0] You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+[CLIENT 0] [Client]  dataset size after merge: 48740
+[CLIENT 0] /content/flgenai/text/client_textdata.py:210: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+[CLIENT 0]   scaler = torch.cuda.amp.GradScaler(enabled=torch.cuda.is_available())
+[CLIENT 0] [93mWARNING [0m:   DEPRECATED FEATURE: flwr.client.start_numpy_client() is deprecated. 
+[CLIENT 0] 	Instead, use `flwr.client.start_client()` by ensuring you first call the `.to_client()` method as shown below: 
+[CLIENT 0] 	flwr.client.start_client(
+[CLIENT 0] 		server_address='<IP>:<PORT>',
+[CLIENT 0] 		client=FlowerClient().to_client(), # <-- where FlowerClient is of type flwr.client.NumPyClient object
+[CLIENT 0] 	)
+[CLIENT 0] 	Using `start_numpy_client()` is deprecated.
+[CLIENT 0] 
+[CLIENT 0]             This is a deprecated feature. It will be removed
+[CLIENT 0]             entirely in future versions of Flower.
+[CLIENT 0]         
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message aa20b81f-aec5-49b2-9141-b8b81f36bc89
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 1 (server round 1)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 1.4768
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.4186
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.2095
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_1.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message fb31900a-add0-4d88-bac0-1bf518df1757
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 3c4dfd6b-655e-4264-8f93-ae9c63a0f015
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 2 (server round 2)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.3778
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.1612
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.1031
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_2.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 4ea95b03-cd40-4aca-bf4f-ee604412f58d
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 5946d1af-e202-4ebe-b630-7993911bcac2
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 3 (server round 3)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.1964
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0994
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0705
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_3.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 64278fac-cb99-4caf-adcf-80ea1ec905b5
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 19eae08f-239a-4d88-aafb-6a72d7159ffb
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 4 (server round 4)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.1345
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0743
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0549
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_4.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 5bf19854-e677-404c-8959-354ff23b0d47
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message dcee8ea2-0cab-498a-a3c7-a75ecefcf0c7
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 5 (server round 5)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0997
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0562
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0432
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_5.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 001747e2-ffc5-4236-aeed-353f557f4b5a
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 4fca7248-e12e-4bbf-b632-fd0cfff4c763
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 6 (server round 6)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0761
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0466
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0369
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_6.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 71ee7789-25d1-44a9-9278-b958899d3002
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 09672b63-2349-44ba-a67e-b585c4c9b12c
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 7 (server round 7)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0573
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0388
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0287
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_7.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message f444954c-ce74-42e0-b3c2-b216b31ae26e
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 8e7036a6-9e65-46e1-8cb1-23440aa0377d
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 8 (server round 8)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0470
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0321
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0253
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_8.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message bf137b2c-5eda-4742-9eee-99f4332f7dd9
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message b0d664c9-c58f-4c46-950c-50cdc347df8d
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 9 (server round 9)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0371
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0263
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0191
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_9.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 6f148ee6-6a04-4557-b883-a283a6431400
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 2216d4ef-25b6-4eda-99e4-cdd534013d0d
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 10 (server round 10)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0286
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0226
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0180
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_10.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 2bae88f0-4109-49ba-b6c1-8573ab189f23
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 7642ca75-93f2-49cf-8a7e-dad4e22ab296
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 11 (server round 11)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0271
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0185
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0142
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_11.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 70cc7e3b-ee57-4e6f-8272-27fd8283d297
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message ff1bd0f5-f864-415e-8ee8-99581bb4db06
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 12 (server round 12)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0217
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0156
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0128
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_12.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 64ab4cd6-f1d1-4525-8aed-9f594ef2e043
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message f506037f-3973-4e32-bd90-da18684d1262
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 13 (server round 13)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0176
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0133
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0106
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_13.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 6612168d-a6ec-4565-b021-0a284acd1ca6
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 36943bc0-d5ce-4892-b1be-2f475f838311
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 14 (server round 14)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0159
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0126
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0109
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_14.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message f9ca3f48-66fd-43bb-94c0-46340a33bc48
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 1f9d7514-9931-4141-b20e-56a8c147aae3
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 15 (server round 15)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0151
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0095
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0079
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_15.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 15970a68-6ec8-4fc6-9903-be46e3ab0f46
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 6259a2a6-2c6a-49e4-8c27-997513d52729
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 16 (server round 16)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0114
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0093
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0126
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_16.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 5a32cd43-0758-43f4-8545-e8cb467b9e66
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 7f3320a7-233f-47ac-adea-bbed310a2780
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 17 (server round 17)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0104
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0081
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0075
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_17.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message ef05c36b-6857-4959-aa00-773918278531
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message cf5d5d6d-d732-4aeb-a5d9-ceecc5338211
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 18 (server round 18)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0093
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0070
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0070
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_18.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 0bb9381d-2b88-4f18-a6be-22dec7958e49
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message d3defe45-3162-43b3-ac6b-ac8b6cf757cc
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 19 (server round 19)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0077
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0065
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0058
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_19.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 30858768-44cd-46af-974e-89caa829352d
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message ca39ab42-0bab-40cb-b5f0-6e635ac1535d
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 20 (server round 20)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0072
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0070
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0070
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_20.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message f2183bab-9c5f-4114-8475-b2d12e602c3c
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 9dcffc79-4d81-4452-86cc-aba8c6512f71
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 21 (server round 21)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0062
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0070
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0054
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_21.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 88065f44-7609-491a-80b0-e233d6aa8b5c
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 985259b5-588a-401f-b879-10fcb90baf73
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 22 (server round 22)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0060
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0062
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0046
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_22.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 9f794645-9f3f-4498-94c1-e3b66c629d0b
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 43418f98-a229-4d77-b7fb-2ce97f6c9881
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 23 (server round 23)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0065
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0064
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0047
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_23.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 11fd2038-ee63-4600-9c2d-98a1514495a4
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 667d6389-3317-4621-abe8-f83a297184eb
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 24 (server round 24)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0047
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0042
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0076
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_24.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 7ab95300-2d25-4f8d-a100-6c2f3143d6ad
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message e1bc9bcf-25d1-4859-aad7-20c8e4a71a41
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 25 (server round 25)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0049
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0051
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0040
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_25.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 1bd20ce3-5bfd-484d-9cd9-512554d9e2e1
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message e26f7c72-c84e-4f78-bcdb-bbae16d3b3ee
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 26 (server round 26)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0039
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0034
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0062
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_26.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message c09cbbee-f278-427c-96d3-0cde0b1bbaf3
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 874f0669-78b8-4b18-ae55-b485f82ba523
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 27 (server round 27)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0040
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0039
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0029
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_27.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 0f23f355-5db9-4ae4-8d40-791be05260bc
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message a3683af7-3130-4dd0-ab12-50f7fe6a5e6d
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 28 (server round 28)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0032
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0039
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0037
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_28.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message eae76281-526c-4aa7-82cd-949bf069d058
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message be3b22c4-d95f-49b9-a8e0-1d60f0ad0d40
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 29 (server round 29)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0032
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0048
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0037
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_29.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message 0bb042c4-c418-4d6c-9ebf-9de7c2c98297
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: train message 69ea029f-08cc-4b97-85cf-536a96fc141b
+[CLIENT 0] [Client]  >>> GLOBAL ROUND 30 (server round 30)
+[CLIENT 0] [CLIENT] Epoch 1/3 | Loss: 0.0030
+[CLIENT 0] [CLIENT] Epoch 2/3 | Loss: 0.0029
+[CLIENT 0] [CLIENT] Epoch 3/3 | Loss: 0.0042
+[CLIENT 0] [Client]   saved ckpt → client_ckpt/round_30.pt
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: evaluate message a7cee382-bda8-44d3-832b-e5bd6403e3b1
+[CLIENT 0] [92mINFO [0m:      Sent reply
+[CLIENT 0] [92mINFO [0m:      
+[CLIENT 0] [92mINFO [0m:      [RUN 0, ROUND ]
+[CLIENT 0] [92mINFO [0m:      Received: reconnect message 653b4f12-05f2-43e3-b44c-f51241977585
+[CLIENT 0] [92mINFO [0m:      Disconnect and shut down

@@ -1,0 +1,20 @@
+{
+  "client_id": "client3",
+  "train_csv_path": "dataset/7030/train3.csv",
+  "server_address": "127.0.0.1:9000",
+  "target_column": "Exited",
+  "log_dir": "logs/exp_paper_full",
+  "gen_model_path": "tvae_gen.pkl",
+  "epoch": 2,
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "gen_multiplier": 3.0,
+  "cosine_sim_threshold": 0.9,
+  "max_gen_attempts": 10,
+  "use_feedback": true,
+  "gen_multiplier_fixed": 0.1,
+  "tvae_epochs": 100,
+  "client_log_dir": "logs/exp_paper_full\\clients\\client3",
+  "tvae_initial_fit_time_sec": 9.94,
+  "total_client_execution_time_sec": 296.92
+}

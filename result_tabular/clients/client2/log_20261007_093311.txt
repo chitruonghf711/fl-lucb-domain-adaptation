@@ -1,0 +1,129 @@
+2026-10-07 09:33:11 | INFO    | === CLIENT STARTED ===
+2026-10-07 09:33:11 | INFO    | CONFIG: {'client_id': 'client2', 'train_csv_path': 'dataset/7030/train2.csv', 'server_address': '127.0.0.1:9000', 'target_column': 'Exited', 'log_dir': 'logs/exp_paper_full', 'gen_model_path': 'tvae_gen.pkl', 'epoch': 2, 'batch_size': 32, 'learning_rate': 0.001, 'gen_multiplier': 3.0, 'cosine_sim_threshold': 0.9, 'max_gen_attempts': 10, 'use_feedback': True, 'gen_multiplier_fixed': 0.1, 'tvae_epochs': 100, 'client_log_dir': 'logs/exp_paper_full\\clients\\client2'}
+2026-10-07 09:33:11 | INFO    | Detected metadata:
+2026-10-07 09:33:11 | INFO    | {
+    "columns": {
+        "0": {
+            "sdtype": "numerical"
+        },
+        "1": {
+            "sdtype": "numerical"
+        },
+        "2": {
+            "sdtype": "numerical"
+        },
+        "3": {
+            "sdtype": "numerical"
+        },
+        "4": {
+            "sdtype": "numerical"
+        },
+        "5": {
+            "sdtype": "numerical"
+        },
+        "6": {
+            "sdtype": "numerical"
+        },
+        "7": {
+            "sdtype": "numerical"
+        },
+        "8": {
+            "sdtype": "numerical"
+        },
+        "9": {
+            "sdtype": "numerical"
+        },
+        "10": {
+            "sdtype": "numerical"
+        },
+        "11": {
+            "sdtype": "numerical"
+        },
+        "12": {
+            "sdtype": "numerical"
+        },
+        "13": {
+            "sdtype": "numerical"
+        },
+        "14": {
+            "sdtype": "numerical"
+        },
+        "15": {
+            "sdtype": "numerical"
+        },
+        "16": {
+            "sdtype": "numerical"
+        },
+        "17": {
+            "sdtype": "numerical"
+        },
+        "18": {
+            "sdtype": "numerical"
+        },
+        "Exited": {
+            "sdtype": "categorical"
+        }
+    },
+    "METADATA_SPEC_VERSION": "SINGLE_TABLE_V1"
+}
+2026-10-07 09:33:11 | INFO    | Fitting table  metadata
+2026-10-07 09:33:11 | INFO    | Fitting formatters for table 
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '0'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '1'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '2'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '3'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '4'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '5'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '6'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '7'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '8'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '9'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '10'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '11'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '12'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '13'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '14'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '15'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '16'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '17'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '18'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | Setting the configuration for the ``HyperTransformer`` for table 
+2026-10-07 09:33:11 | INFO    | Fitting HyperTransformer for table 
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '0'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '1'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '2'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '3'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '4'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '5'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '6'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '7'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '8'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '9'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '10'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '11'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '12'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '13'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '14'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '15'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '16'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '17'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | No rounding scheme detected for column '18'. Data will not be rounded.
+2026-10-07 09:33:11 | INFO    | Guidance: There are no missing values in column 0. Extra column not created.
+2026-10-07 09:33:12 | INFO    | Guidance: There are no missing values in column 1. Extra column not created.
+2026-10-07 09:33:12 | INFO    | Guidance: There are no missing values in column 2. Extra column not created.
+2026-10-07 09:33:13 | INFO    | Guidance: There are no missing values in column 3. Extra column not created.
+2026-10-07 09:33:14 | INFO    | Guidance: There are no missing values in column 4. Extra column not created.
+2026-10-07 09:33:14 | INFO    | Guidance: There are no missing values in column 5. Extra column not created.
+2026-10-07 09:33:15 | INFO    | Guidance: There are no missing values in column 6. Extra column not created.
+2026-10-07 09:33:15 | INFO    | Guidance: There are no missing values in column 7. Extra column not created.
+2026-10-07 09:33:16 | INFO    | Guidance: There are no missing values in column 8. Extra column not created.
+2026-10-07 09:33:16 | INFO    | Guidance: There are no missing values in column 9. Extra column not created.
+2026-10-07 09:33:18 | INFO    | Guidance: There are no missing values in column 10. Extra column not created.
+2026-10-07 09:33:18 | INFO    | Guidance: There are no missing values in column 11. Extra column not created.
+2026-10-07 09:33:18 | INFO    | Guidance: There are no missing values in column 12. Extra column not created.
+2026-10-07 09:33:19 | INFO    | Guidance: There are no missing values in column 13. Extra column not created.
+2026-10-07 09:33:19 | INFO    | Guidance: There are no missing values in column 14. Extra column not created.
+2026-10-07 09:33:19 | INFO    | Guidance: There are no missing values in column 15. Extra column not created.
+2026-10-07 09:33:19 | INFO    | Guidance: There are no missing values in column 16. Extra column not created.
+2026-10-07 09:33:19 | INFO    | Guidance: There are no missing values in column 17. Extra column not created.
+2026-10-07 09:33:19 | INFO    | Guidance: There are no missing values in column 18. Extra column not created.

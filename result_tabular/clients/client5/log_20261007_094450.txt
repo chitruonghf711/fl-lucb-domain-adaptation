@@ -1,0 +1,471 @@
+2026-10-07 09:44:50 | INFO    | === CLIENT STARTED ===
+2026-10-07 09:44:50 | INFO    | CONFIG: {'client_id': 'client5', 'train_csv_path': 'dataset/7030/train5.csv', 'server_address': '127.0.0.1:9000', 'target_column': 'Exited', 'log_dir': 'logs/exp_paper_full', 'gen_model_path': 'tvae_gen.pkl', 'epoch': 2, 'batch_size': 32, 'learning_rate': 0.001, 'gen_multiplier': 3.0, 'cosine_sim_threshold': 0.9, 'max_gen_attempts': 10, 'use_feedback': True, 'gen_multiplier_fixed': 0.1, 'tvae_epochs': 100, 'client_log_dir': 'logs/exp_paper_full\\clients\\client5'}
+2026-10-07 09:44:50 | INFO    | Detected metadata:
+2026-10-07 09:44:50 | INFO    | {
+    "columns": {
+        "0": {
+            "sdtype": "numerical"
+        },
+        "1": {
+            "sdtype": "numerical"
+        },
+        "2": {
+            "sdtype": "numerical"
+        },
+        "3": {
+            "sdtype": "numerical"
+        },
+        "4": {
+            "sdtype": "numerical"
+        },
+        "5": {
+            "sdtype": "numerical"
+        },
+        "6": {
+            "sdtype": "numerical"
+        },
+        "7": {
+            "sdtype": "numerical"
+        },
+        "8": {
+            "sdtype": "numerical"
+        },
+        "9": {
+            "sdtype": "numerical"
+        },
+        "10": {
+            "sdtype": "numerical"
+        },
+        "11": {
+            "sdtype": "numerical"
+        },
+        "12": {
+            "sdtype": "numerical"
+        },
+        "13": {
+            "sdtype": "numerical"
+        },
+        "14": {
+            "sdtype": "numerical"
+        },
+        "15": {
+            "sdtype": "numerical"
+        },
+        "16": {
+            "sdtype": "numerical"
+        },
+        "17": {
+            "sdtype": "numerical"
+        },
+        "18": {
+            "sdtype": "numerical"
+        },
+        "Exited": {
+            "sdtype": "categorical"
+        }
+    },
+    "METADATA_SPEC_VERSION": "SINGLE_TABLE_V1"
+}
+2026-10-07 09:44:51 | INFO    | Fitting table  metadata
+2026-10-07 09:44:51 | INFO    | Fitting formatters for table 
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '0'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '1'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '2'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '3'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '4'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '5'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '6'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '7'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '8'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '9'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '10'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '11'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '12'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '13'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '14'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '15'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '16'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '17'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '18'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | Setting the configuration for the ``HyperTransformer`` for table 
+2026-10-07 09:44:51 | INFO    | Fitting HyperTransformer for table 
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '0'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '1'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '2'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '3'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '4'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '5'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '6'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '7'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '8'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '9'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '10'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '11'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '12'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '13'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '14'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '15'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '16'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '17'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | No rounding scheme detected for column '18'. Data will not be rounded.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 0. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 1. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 2. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 3. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 4. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 5. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 6. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 7. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 8. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 9. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 10. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 11. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 12. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 13. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 14. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 15. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 16. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 17. Extra column not created.
+2026-10-07 09:44:51 | INFO    | Guidance: There are no missing values in column 18. Extra column not created.
+2026-10-07 09:44:54 | WARNING | DEPRECATED FEATURE: flwr.client.start_numpy_client() is deprecated. 
+	Instead, use `flwr.client.start_client()` by ensuring you first call the `.to_client()` method as shown below: 
+	flwr.client.start_client(
+		server_address='<IP>:<PORT>',
+		client=FlowerClient().to_client(), # <-- where FlowerClient is of type flwr.client.NumPyClient object
+	)
+	Using `start_numpy_client()` is deprecated.
+
+            This is a deprecated feature. It will be removed
+            entirely in future versions of Flower.
+        
+2026-10-07 09:44:54 | DEBUG   | Opened insecure gRPC connection (no certificates were passed)
+2026-10-07 09:44:54 | DEBUG   | ChannelConnectivity.IDLE
+2026-10-07 09:44:55 | DEBUG   | ChannelConnectivity.CONNECTING
+2026-10-07 09:44:55 | DEBUG   | ChannelConnectivity.READY
+2026-10-07 09:45:04 | INFO    | 
+2026-10-07 09:45:04 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:45:04 | INFO    | Received: train message 88a2624e-5280-476f-a32e-8d042d358731
+2026-10-07 09:45:04 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:45:04 | INFO    | Generated 35 synthetic samples ignore feedback in 0.12s
+2026-10-07 09:45:04 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:45:04 | INFO    | Epoch 1 / 2 - Loss: 0.6853
+2026-10-07 09:45:04 | INFO    | Epoch 2 / 2 - Loss: 0.6664
+2026-10-07 09:45:04 | INFO    | Sent reply
+2026-10-07 09:45:05 | INFO    | 
+2026-10-07 09:45:05 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:45:05 | INFO    | Received: train message 64a83acb-b080-454a-8dd0-8b8cfa4853d0
+2026-10-07 09:45:05 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:45:05 | INFO    | Generated 35 synthetic samples ignore feedback in 0.13s
+2026-10-07 09:45:05 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:45:05 | INFO    | Epoch 1 / 2 - Loss: 0.4393
+2026-10-07 09:45:05 | INFO    | Epoch 2 / 2 - Loss: 0.4286
+2026-10-07 09:45:05 | INFO    | Sent reply
+2026-10-07 09:45:24 | INFO    | 
+2026-10-07 09:45:24 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:45:24 | INFO    | Received: train message 6f901cbd-e4d5-4e14-82fe-a27f0592ba65
+2026-10-07 09:45:24 | INFO    | Using feedback: 610 samples
+2026-10-07 09:45:26 | INFO    | NaN before restore: 6379 | after restore: 0
+2026-10-07 09:45:28 | INFO    | [GEN-1] Filtered: 136 | Total Selected: 86
+2026-10-07 09:45:28 | INFO    | [FINAL] Selected 35 synthetic samples (required 35)
+2026-10-07 09:45:28 | INFO    | Final train size: Original=350 | Restored=610 | Synthetic=35 | Total=995
+2026-10-07 09:45:28 | INFO    | Epoch 1 / 2 - Loss: 0.7729
+2026-10-07 09:45:28 | INFO    | Epoch 2 / 2 - Loss: 0.5905
+2026-10-07 09:45:28 | INFO    | Sent reply
+2026-10-07 09:45:29 | INFO    | 
+2026-10-07 09:45:29 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:45:29 | INFO    | Received: train message e7a9f4bb-ad31-4f09-b548-fba08442ff21
+2026-10-07 09:45:29 | INFO    | Using feedback: 610 samples
+2026-10-07 09:45:31 | INFO    | NaN before restore: 6379 | after restore: 0
+2026-10-07 09:45:33 | INFO    | [GEN-1] Filtered: 98 | Total Selected: 60
+2026-10-07 09:45:33 | INFO    | [FINAL] Selected 35 synthetic samples (required 35)
+2026-10-07 09:45:33 | INFO    | Final train size: Original=350 | Restored=610 | Synthetic=35 | Total=995
+2026-10-07 09:45:34 | INFO    | Epoch 1 / 2 - Loss: 0.5487
+2026-10-07 09:45:34 | INFO    | Epoch 2 / 2 - Loss: 0.4306
+2026-10-07 09:45:34 | INFO    | Sent reply
+2026-10-07 09:45:35 | INFO    | 
+2026-10-07 09:45:35 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:45:35 | INFO    | Received: train message b11cde45-cdd4-48c5-85fc-64d259ee95e5
+2026-10-07 09:45:35 | INFO    | Using feedback: 610 samples
+2026-10-07 09:45:38 | INFO    | NaN before restore: 6379 | after restore: 0
+2026-10-07 09:45:41 | INFO    | [GEN-1] Filtered: 116 | Total Selected: 87
+2026-10-07 09:45:41 | INFO    | [FINAL] Selected 35 synthetic samples (required 35)
+2026-10-07 09:45:41 | INFO    | Final train size: Original=350 | Restored=610 | Synthetic=35 | Total=995
+2026-10-07 09:45:41 | INFO    | Epoch 1 / 2 - Loss: 0.4504
+2026-10-07 09:45:41 | INFO    | Epoch 2 / 2 - Loss: 0.3617
+2026-10-07 09:45:41 | INFO    | Sent reply
+2026-10-07 09:45:42 | INFO    | 
+2026-10-07 09:45:42 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:45:42 | INFO    | Received: train message 215c2261-75c5-428e-b9df-ce9f2022e799
+2026-10-07 09:45:42 | INFO    | Using feedback: 610 samples
+2026-10-07 09:45:44 | INFO    | NaN before restore: 6379 | after restore: 0
+2026-10-07 09:45:46 | INFO    | [GEN-1] Filtered: 95 | Total Selected: 75
+2026-10-07 09:45:46 | INFO    | [FINAL] Selected 35 synthetic samples (required 35)
+2026-10-07 09:45:46 | INFO    | Final train size: Original=350 | Restored=610 | Synthetic=35 | Total=995
+2026-10-07 09:45:46 | INFO    | Epoch 1 / 2 - Loss: 0.4415
+2026-10-07 09:45:46 | INFO    | Epoch 2 / 2 - Loss: 0.3691
+2026-10-07 09:45:46 | INFO    | Sent reply
+2026-10-07 09:45:56 | INFO    | 
+2026-10-07 09:45:56 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:45:56 | INFO    | Received: train message a34ad633-b615-4cb6-9f55-1e07f6305d98
+2026-10-07 09:45:56 | INFO    | Using feedback: 537 samples
+2026-10-07 09:45:58 | INFO    | NaN before restore: 4833 | after restore: 0
+2026-10-07 09:45:59 | INFO    | [GEN-1] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:01 | INFO    | [GEN-2] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:02 | INFO    | [GEN-3] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:03 | INFO    | [GEN-4] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:05 | INFO    | [GEN-5] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:06 | INFO    | [GEN-6] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:07 | INFO    | [GEN-7] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:09 | INFO    | [GEN-8] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:10 | INFO    | [GEN-9] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:11 | INFO    | [GEN-10] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:11 | INFO    | [FINAL] Selected 0 synthetic samples (required 35)
+2026-10-07 09:46:11 | INFO    | Final train size: Original=350 | Restored=537 | Synthetic=0 | Total=887
+2026-10-07 09:46:11 | INFO    | Epoch 1 / 2 - Loss: 0.2212
+2026-10-07 09:46:11 | INFO    | Epoch 2 / 2 - Loss: 0.1877
+2026-10-07 09:46:11 | INFO    | Sent reply
+2026-10-07 09:46:11 | INFO    | 
+2026-10-07 09:46:11 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:46:11 | INFO    | Received: train message 68ef38b1-80e0-4823-9b57-6bac532c1b27
+2026-10-07 09:46:11 | INFO    | Using feedback: 537 samples
+2026-10-07 09:46:13 | INFO    | NaN before restore: 4833 | after restore: 0
+2026-10-07 09:46:14 | INFO    | [GEN-1] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:16 | INFO    | [GEN-2] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:17 | INFO    | [GEN-3] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:18 | INFO    | [GEN-4] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:20 | INFO    | [GEN-5] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:21 | INFO    | [GEN-6] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:22 | INFO    | [GEN-7] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:24 | INFO    | [GEN-8] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:25 | INFO    | [GEN-9] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:26 | INFO    | [GEN-10] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:26 | INFO    | [FINAL] Selected 0 synthetic samples (required 35)
+2026-10-07 09:46:26 | INFO    | Final train size: Original=350 | Restored=537 | Synthetic=0 | Total=887
+2026-10-07 09:46:26 | INFO    | Epoch 1 / 2 - Loss: 0.2186
+2026-10-07 09:46:26 | INFO    | Epoch 2 / 2 - Loss: 0.1749
+2026-10-07 09:46:26 | INFO    | Sent reply
+2026-10-07 09:46:36 | INFO    | 
+2026-10-07 09:46:36 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:46:36 | INFO    | Received: train message 0a4a3371-7e63-4221-afa5-b2ca6210ce77
+2026-10-07 09:46:36 | INFO    | Using feedback: 417 samples
+2026-10-07 09:46:38 | INFO    | NaN before restore: 3753 | after restore: 0
+2026-10-07 09:46:39 | INFO    | [GEN-1] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:40 | INFO    | [GEN-2] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:40 | INFO    | [GEN-3] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:42 | INFO    | [GEN-4] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:43 | INFO    | [GEN-5] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:43 | INFO    | [GEN-6] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:44 | INFO    | [GEN-7] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:45 | INFO    | [GEN-8] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:46 | INFO    | [GEN-9] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:47 | INFO    | [GEN-10] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:47 | INFO    | [FINAL] Selected 0 synthetic samples (required 35)
+2026-10-07 09:46:47 | INFO    | Final train size: Original=350 | Restored=417 | Synthetic=0 | Total=767
+2026-10-07 09:46:47 | INFO    | Epoch 1 / 2 - Loss: 0.5359
+2026-10-07 09:46:47 | INFO    | Epoch 2 / 2 - Loss: 0.3352
+2026-10-07 09:46:47 | INFO    | Sent reply
+2026-10-07 09:46:51 | INFO    | 
+2026-10-07 09:46:51 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:46:51 | INFO    | Received: train message 372dcb70-4bb4-45bc-b0e2-b7ff1398e967
+2026-10-07 09:46:51 | INFO    | Using feedback: 434 samples
+2026-10-07 09:46:53 | INFO    | NaN before restore: 3906 | after restore: 0
+2026-10-07 09:46:53 | INFO    | [GEN-1] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:54 | INFO    | [GEN-2] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:55 | INFO    | [GEN-3] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:55 | INFO    | [GEN-4] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:56 | INFO    | [GEN-5] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:57 | INFO    | [GEN-6] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:58 | INFO    | [GEN-7] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:58 | INFO    | [GEN-8] Filtered: 0 | Total Selected: 0
+2026-10-07 09:46:59 | INFO    | [GEN-9] Filtered: 0 | Total Selected: 0
+2026-10-07 09:47:00 | INFO    | [GEN-10] Filtered: 0 | Total Selected: 0
+2026-10-07 09:47:00 | INFO    | [FINAL] Selected 0 synthetic samples (required 35)
+2026-10-07 09:47:00 | INFO    | Final train size: Original=350 | Restored=434 | Synthetic=0 | Total=784
+2026-10-07 09:47:00 | INFO    | Epoch 1 / 2 - Loss: 0.2507
+2026-10-07 09:47:00 | INFO    | Epoch 2 / 2 - Loss: 0.1982
+2026-10-07 09:47:00 | INFO    | Sent reply
+2026-10-07 09:47:02 | INFO    | 
+2026-10-07 09:47:02 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:47:02 | INFO    | Received: train message e410852a-5048-4ad9-9292-ecb854b59c09
+2026-10-07 09:47:02 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:47:02 | INFO    | Generated 35 synthetic samples ignore feedback in 0.09s
+2026-10-07 09:47:02 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:47:02 | INFO    | Epoch 1 / 2 - Loss: 0.3170
+2026-10-07 09:47:02 | INFO    | Epoch 2 / 2 - Loss: 0.2749
+2026-10-07 09:47:02 | INFO    | Sent reply
+2026-10-07 09:47:12 | INFO    | 
+2026-10-07 09:47:12 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:47:12 | INFO    | Received: train message 631c1e6c-1b91-458e-8236-5c5d6c885422
+2026-10-07 09:47:12 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:47:12 | INFO    | Generated 35 synthetic samples ignore feedback in 0.16s
+2026-10-07 09:47:12 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:47:12 | INFO    | Epoch 1 / 2 - Loss: 0.3059
+2026-10-07 09:47:12 | INFO    | Epoch 2 / 2 - Loss: 0.2715
+2026-10-07 09:47:12 | INFO    | Sent reply
+2026-10-07 09:47:26 | INFO    | 
+2026-10-07 09:47:26 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:47:26 | INFO    | Received: train message d210df67-485c-4636-a0ea-b84342bf2910
+2026-10-07 09:47:26 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:47:26 | INFO    | Generated 35 synthetic samples ignore feedback in 0.10s
+2026-10-07 09:47:26 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:47:26 | INFO    | Epoch 1 / 2 - Loss: 0.3097
+2026-10-07 09:47:26 | INFO    | Epoch 2 / 2 - Loss: 0.2840
+2026-10-07 09:47:26 | INFO    | Sent reply
+2026-10-07 09:47:34 | INFO    | 
+2026-10-07 09:47:34 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:47:34 | INFO    | Received: train message df72d4de-aabc-4f30-9df3-d2ee549e1295
+2026-10-07 09:47:34 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:47:34 | INFO    | Generated 35 synthetic samples ignore feedback in 0.11s
+2026-10-07 09:47:34 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:47:34 | INFO    | Epoch 1 / 2 - Loss: 0.3196
+2026-10-07 09:47:34 | INFO    | Epoch 2 / 2 - Loss: 0.2745
+2026-10-07 09:47:34 | INFO    | Sent reply
+2026-10-07 09:47:43 | INFO    | 
+2026-10-07 09:47:43 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:47:43 | INFO    | Received: train message 0f79a14f-1fd6-46de-b192-c27a98fca494
+2026-10-07 09:47:43 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:47:43 | INFO    | Generated 35 synthetic samples ignore feedback in 0.14s
+2026-10-07 09:47:43 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:47:43 | INFO    | Epoch 1 / 2 - Loss: 0.3168
+2026-10-07 09:47:43 | INFO    | Epoch 2 / 2 - Loss: 0.2696
+2026-10-07 09:47:43 | INFO    | Sent reply
+2026-10-07 09:47:48 | INFO    | 
+2026-10-07 09:47:48 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:47:48 | INFO    | Received: train message 52ef07b3-0e8a-4ce2-834e-fe648bc95c5d
+2026-10-07 09:47:48 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:47:48 | INFO    | Generated 35 synthetic samples ignore feedback in 0.08s
+2026-10-07 09:47:48 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:47:48 | INFO    | Epoch 1 / 2 - Loss: 0.3006
+2026-10-07 09:47:48 | INFO    | Epoch 2 / 2 - Loss: 0.2649
+2026-10-07 09:47:48 | INFO    | Sent reply
+2026-10-07 09:47:55 | INFO    | 
+2026-10-07 09:47:55 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:47:55 | INFO    | Received: train message cf5d3904-e86c-4f3c-baf5-188d2af13a5d
+2026-10-07 09:47:55 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:47:56 | INFO    | Generated 35 synthetic samples ignore feedback in 0.11s
+2026-10-07 09:47:56 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:47:56 | INFO    | Epoch 1 / 2 - Loss: 0.3217
+2026-10-07 09:47:56 | INFO    | Epoch 2 / 2 - Loss: 0.2746
+2026-10-07 09:47:56 | INFO    | Sent reply
+2026-10-07 09:47:59 | INFO    | 
+2026-10-07 09:47:59 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:47:59 | INFO    | Received: train message 9db353ca-f8be-4d96-bfcd-9e4f4561b053
+2026-10-07 09:47:59 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:47:59 | INFO    | Generated 35 synthetic samples ignore feedback in 0.07s
+2026-10-07 09:47:59 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:47:59 | INFO    | Epoch 1 / 2 - Loss: 0.3221
+2026-10-07 09:47:59 | INFO    | Epoch 2 / 2 - Loss: 0.2642
+2026-10-07 09:47:59 | INFO    | Sent reply
+2026-10-07 09:48:03 | INFO    | 
+2026-10-07 09:48:03 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:48:03 | INFO    | Received: train message 22c3e769-3b7e-43ef-99b1-16abfef0be77
+2026-10-07 09:48:03 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:48:03 | INFO    | Generated 35 synthetic samples ignore feedback in 0.08s
+2026-10-07 09:48:03 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:48:03 | INFO    | Epoch 1 / 2 - Loss: 0.2993
+2026-10-07 09:48:03 | INFO    | Epoch 2 / 2 - Loss: 0.2588
+2026-10-07 09:48:03 | INFO    | Sent reply
+2026-10-07 09:48:10 | INFO    | 
+2026-10-07 09:48:10 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:48:10 | INFO    | Received: train message ad4e904f-042c-4749-8680-49c8489addfa
+2026-10-07 09:48:10 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:48:10 | INFO    | Generated 35 synthetic samples ignore feedback in 0.11s
+2026-10-07 09:48:10 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:48:10 | INFO    | Epoch 1 / 2 - Loss: 0.3024
+2026-10-07 09:48:10 | INFO    | Epoch 2 / 2 - Loss: 0.2564
+2026-10-07 09:48:10 | INFO    | Sent reply
+2026-10-07 09:48:16 | INFO    | 
+2026-10-07 09:48:16 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:48:16 | INFO    | Received: train message 5ca66ea3-4d30-48f1-9bd7-20b880f08415
+2026-10-07 09:48:16 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:48:16 | INFO    | Generated 35 synthetic samples ignore feedback in 0.09s
+2026-10-07 09:48:16 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:48:16 | INFO    | Epoch 1 / 2 - Loss: 0.3199
+2026-10-07 09:48:16 | INFO    | Epoch 2 / 2 - Loss: 0.2448
+2026-10-07 09:48:16 | INFO    | Sent reply
+2026-10-07 09:48:24 | INFO    | 
+2026-10-07 09:48:24 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:48:24 | INFO    | Received: train message 1b3b05f5-1e0b-4cfb-8116-32b6d109806a
+2026-10-07 09:48:24 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:48:25 | INFO    | Generated 35 synthetic samples ignore feedback in 0.08s
+2026-10-07 09:48:25 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:48:25 | INFO    | Epoch 1 / 2 - Loss: 0.2981
+2026-10-07 09:48:25 | INFO    | Epoch 2 / 2 - Loss: 0.2468
+2026-10-07 09:48:25 | INFO    | Sent reply
+2026-10-07 09:48:30 | INFO    | 
+2026-10-07 09:48:30 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:48:30 | INFO    | Received: train message e11ffb32-22c1-44b3-b702-7d6da3873f99
+2026-10-07 09:48:30 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:48:30 | INFO    | Generated 35 synthetic samples ignore feedback in 0.15s
+2026-10-07 09:48:30 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:48:30 | INFO    | Epoch 1 / 2 - Loss: 0.2927
+2026-10-07 09:48:30 | INFO    | Epoch 2 / 2 - Loss: 0.2579
+2026-10-07 09:48:30 | INFO    | Sent reply
+2026-10-07 09:48:35 | INFO    | 
+2026-10-07 09:48:35 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:48:35 | INFO    | Received: train message 2a9b15c2-f25a-428c-937b-6f227621483c
+2026-10-07 09:48:35 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:48:35 | INFO    | Generated 35 synthetic samples ignore feedback in 0.11s
+2026-10-07 09:48:35 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:48:35 | INFO    | Epoch 1 / 2 - Loss: 0.3040
+2026-10-07 09:48:35 | INFO    | Epoch 2 / 2 - Loss: 0.2615
+2026-10-07 09:48:35 | INFO    | Sent reply
+2026-10-07 09:48:38 | INFO    | 
+2026-10-07 09:48:38 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:48:38 | INFO    | Received: train message c7b4d3eb-6771-40a3-b84c-c010a811a551
+2026-10-07 09:48:38 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:48:38 | INFO    | Generated 35 synthetic samples ignore feedback in 0.08s
+2026-10-07 09:48:38 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:48:38 | INFO    | Epoch 1 / 2 - Loss: 0.3115
+2026-10-07 09:48:38 | INFO    | Epoch 2 / 2 - Loss: 0.2580
+2026-10-07 09:48:38 | INFO    | Sent reply
+2026-10-07 09:48:45 | INFO    | 
+2026-10-07 09:48:45 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:48:45 | INFO    | Received: train message c9b9fedc-276c-4e98-b745-dd30d1474ff4
+2026-10-07 09:48:45 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:48:45 | INFO    | Generated 35 synthetic samples ignore feedback in 0.09s
+2026-10-07 09:48:45 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:48:45 | INFO    | Epoch 1 / 2 - Loss: 0.3110
+2026-10-07 09:48:45 | INFO    | Epoch 2 / 2 - Loss: 0.2701
+2026-10-07 09:48:45 | INFO    | Sent reply
+2026-10-07 09:48:52 | INFO    | 
+2026-10-07 09:48:52 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:48:52 | INFO    | Received: train message 26e5537b-4e18-4127-b2c3-b77ca4f6422a
+2026-10-07 09:48:52 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:48:53 | INFO    | Generated 35 synthetic samples ignore feedback in 0.14s
+2026-10-07 09:48:53 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:48:53 | INFO    | Epoch 1 / 2 - Loss: 0.3035
+2026-10-07 09:48:53 | INFO    | Epoch 2 / 2 - Loss: 0.2378
+2026-10-07 09:48:53 | INFO    | Sent reply
+2026-10-07 09:49:09 | INFO    | 
+2026-10-07 09:49:09 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:49:09 | INFO    | Received: train message 3cf45b4a-d8d4-40e3-b49e-e9eb9b917555
+2026-10-07 09:49:09 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:49:09 | INFO    | Generated 35 synthetic samples ignore feedback in 0.11s
+2026-10-07 09:49:09 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:49:09 | INFO    | Epoch 1 / 2 - Loss: 0.2878
+2026-10-07 09:49:10 | INFO    | Epoch 2 / 2 - Loss: 0.2458
+2026-10-07 09:49:10 | INFO    | Sent reply
+2026-10-07 09:49:16 | INFO    | 
+2026-10-07 09:49:16 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:49:16 | INFO    | Received: train message b8647e59-bbd5-4014-8504-ff3a5abb5cad
+2026-10-07 09:49:16 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:49:16 | INFO    | Generated 35 synthetic samples ignore feedback in 0.13s
+2026-10-07 09:49:16 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:49:16 | INFO    | Epoch 1 / 2 - Loss: 0.3089
+2026-10-07 09:49:16 | INFO    | Epoch 2 / 2 - Loss: 0.2391
+2026-10-07 09:49:16 | INFO    | Sent reply
+2026-10-07 09:49:31 | INFO    | 
+2026-10-07 09:49:31 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:49:31 | INFO    | Received: train message 523bd506-3de0-49d8-b545-41376a93ae6a
+2026-10-07 09:49:31 | INFO    | Gen ignore feedback or no feedback provided
+2026-10-07 09:49:31 | INFO    | Generated 35 synthetic samples ignore feedback in 0.12s
+2026-10-07 09:49:31 | INFO    | Final train size: Original=350 | Restored=0 | Synthetic=0 | Total=385
+2026-10-07 09:49:31 | INFO    | Epoch 1 / 2 - Loss: 0.3058
+2026-10-07 09:49:31 | INFO    | Epoch 2 / 2 - Loss: 0.2488
+2026-10-07 09:49:31 | INFO    | Sent reply
+2026-10-07 09:49:40 | INFO    | 
+2026-10-07 09:49:40 | INFO    | [RUN 0, ROUND ]
+2026-10-07 09:49:40 | INFO    | Received: reconnect message 7dcd326c-b69b-4d51-b527-2b216d18c5e9
+2026-10-07 09:49:40 | DEBUG   | gRPC channel closed
+2026-10-07 09:49:40 | INFO    | Disconnect and shut down
