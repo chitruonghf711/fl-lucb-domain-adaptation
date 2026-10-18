@@ -1,0 +1,40 @@
+2026-10-18 16:18:25 | INFO    | === CLIENT STARTED ===
+2026-10-18 16:18:25 | INFO    | CONFIG: {'client_id': 'client1', 'train_csv_path': 'dataset/7030/train1.csv', 'server_address': '127.0.0.1:9000', 'target_column': 'Exited', 'log_dir': 'E:\\FL\\reproduce_code\\tabular\\logs\\tabular_lucb_smoke_20261018_161808', 'gen_model_path': 'tvae_gen.pkl', 'epoch': 1, 'batch_size': 32, 'learning_rate': 0.001, 'gen_multiplier': 3.0, 'cosine_sim_threshold': 0.9, 'max_gen_attempts': 10, 'use_feedback': True, 'gen_multiplier_fixed': 0.1, 'feedback_protocol': 'abstract', 'allow_raw_feedback': False, 'smoke_no_generation': True, 'client_log_dir': 'E:\\FL\\reproduce_code\\tabular\\logs\\tabular_lucb_smoke_20261018_161808\\clients\\client1'}
+2026-10-18 16:18:25 | WARNING | DEPRECATED FEATURE: flwr.client.start_numpy_client() is deprecated. 
+	Instead, use `flwr.client.start_client()` by ensuring you first call the `.to_client()` method as shown below: 
+	flwr.client.start_client(
+		server_address='<IP>:<PORT>',
+		client=FlowerClient().to_client(), # <-- where FlowerClient is of type flwr.client.NumPyClient object
+	)
+	Using `start_numpy_client()` is deprecated.
+
+            This is a deprecated feature. It will be removed
+            entirely in future versions of Flower.
+        
+2026-10-18 16:18:25 | DEBUG   | Opened insecure gRPC connection (no certificates were passed)
+2026-10-18 16:18:25 | DEBUG   | ChannelConnectivity.IDLE
+2026-10-18 16:18:25 | DEBUG   | ChannelConnectivity.READY
+2026-10-18 16:18:25 | INFO    | 
+2026-10-18 16:18:25 | INFO    | [RUN 0, ROUND ]
+2026-10-18 16:18:25 | INFO    | Received: train message c6644e92-abd3-4adc-bf8e-45fb5f1cf79f
+2026-10-18 16:18:25 | INFO    | Smoke mode skipped TVAE generation and trained only on the local shard
+2026-10-18 16:18:25 | INFO    | Final train size: Original=1050 | Restored=0 | Synthetic=0 | Total=1050
+2026-10-18 16:18:27 | INFO    | Epoch 1 / 1 - Loss: 0.6638
+2026-10-18 16:18:27 | INFO    | === ROUND COMPLETED ===
+
+2026-10-18 16:18:27 | INFO    | Sent reply
+2026-10-18 16:18:28 | INFO    | 
+2026-10-18 16:18:28 | INFO    | [RUN 0, ROUND ]
+2026-10-18 16:18:28 | INFO    | Received: train message cf3cb46d-0f49-417e-88b5-6064dd0f2a23
+2026-10-18 16:18:28 | INFO    | Smoke mode validated 1 abstract weak class summaries
+2026-10-18 16:18:28 | INFO    | Smoke mode skipped TVAE generation and trained only on the local shard
+2026-10-18 16:18:28 | INFO    | Final train size: Original=1050 | Restored=0 | Synthetic=0 | Total=1050
+2026-10-18 16:18:28 | INFO    | Epoch 1 / 1 - Loss: 0.5050
+2026-10-18 16:18:28 | INFO    | === ROUND COMPLETED ===
+
+2026-10-18 16:18:28 | INFO    | Sent reply
+2026-10-18 16:18:28 | INFO    | 
+2026-10-18 16:18:28 | INFO    | [RUN 0, ROUND ]
+2026-10-18 16:18:28 | INFO    | Received: reconnect message 3c72b03e-e066-4f61-9238-10097e493193
+2026-10-18 16:18:28 | DEBUG   | gRPC channel closed
+2026-10-18 16:18:28 | INFO    | Disconnect and shut down

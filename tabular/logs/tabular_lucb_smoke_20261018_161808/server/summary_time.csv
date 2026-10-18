@@ -1,0 +1,3 @@
+round,round_time_sec,aggregate_time_sec,feedback_time_sec,feedback_triggered,selection_mode,status,stop_reason,model_sample_evaluations,budget,boundary_gap,selected_client_ids,feedback_client_ids
+1,5.75,0.0,0.3,True,lucb,ok,epsilon_reached,320,3750,-0.4448091412546282,"['client1', 'client2', 'client3']","['client1', 'client2', 'client3']"
+2,0.68,0.0,0.27,True,lucb,ok,epsilon_reached,320,3750,-0.4448091412546282,"['client1', 'client2', 'client3']","['client1', 'client2', 'client3']"

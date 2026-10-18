@@ -22,12 +22,22 @@ Phuong-Anh Vu¹, Kim-Tinh Phan¹, Cao-Dien Nguyen¹, Tien-Dung Cao¹ ✉, Le Tri
 
 In federated learning, the server often holds a test set that represents the **target domain**, while clients train on local data drawn from somewhere else. That gap — domain shift — is what degrades the global model.
 
-This framework closes it with a feedback loop that never moves raw data:
+This framework closes it with a feedback loop. The current implementation uses
+budget-bounded LUCB client diagnostics by default; the historical full-target
+scan remains available only as an experimental baseline.
 
-1. **The server analyses the shift.** It aggregates the client models (FedAvg), evaluates all of them on its target test set, and, for each test sample, picks the model that predicts the correct label with the highest confidence.
-2. **It distils lightweight feedback.** From that model it computes a **Grad-CAM** or **SHAP** attribution and keeps only the *top-k* most important features plus the label — a statistical summary, not a sample.
-3. **It targets each client's own errors.** For every client, the server sends back the feedback for the *top-m* samples that client misclassified most confidently.
-4. **Clients generate data from the feedback.** The important features are written into a noisy input at their recorded positions and passed through a generative model — TVAE for tabular, a diffusion model for images, an LLM for text. Local training then runs on real + synthetic data.
+1. **The server monitors the global model separately.** Plateau and regression
+   checks remain full global-model monitoring and are not charged to LUCB.
+2. **LUCB diagnoses weak clients on fixed minibatches.** It ranks client error
+   rates, uses Wilson confidence intervals, and stops at a confidence boundary
+   or a hard model-sample budget. Evidence is reset when the client-model
+   fingerprint changes.
+3. **It emits only abstract feedback by default.** The server keeps selected
+   client/class labels and aggregate SHAP, salient-position, or Grad-CAM patch
+   metadata. It does not transmit target rows, target text, or target pixels.
+4. **Clients generate from local context.** TVAE receives local feature
+   statistics, text generation receives labels and position distributions, and
+   image refinement uses same-label local images as canvases.
 
 Feedback is not produced every round. It is triggered once enough rounds have passed, once client models start overfitting locally, or once the global model's accuracy on the server test set plateaus or drops.
 
@@ -39,13 +49,38 @@ Feedback is not produced every round. It is triggered once enough rounds have pa
 
 ---
 
+## LUCB feedback protocol
+
+The dependency-free [`fl_lucb/`](fl_lucb/) package is shared by all three
+tracks. It builds deterministic, non-replacement, best-effort stratified
+minibatch plans; a rare text class is not duplicated merely to fill every
+batch. The configuration keys are consistent across the servers:
+
+| Key | Pilot default | Meaning |
+| --- | ---: | --- |
+| `selection_mode` | `lucb` | `lucb` or `legacy_full_scan` |
+| `lucb_budget_fraction` | `0.25` | Fraction of the equivalent full client scan measured in model-sample evaluations |
+| `lucb_batch_size` | `64` | Planned samples per client minibatch |
+| `lucb_top_k` | at most `3` | Weak clients selected for feedback |
+| `lucb_epsilon`, `lucb_delta` | `0.02`, `0.05` | LUCB boundary tolerance and family-wise Wilson error budget allocated across planned looks |
+| `weak_class_accuracy` | `0.85` | A class is weak only when its Wilson upper accuracy bound is below this value |
+| `seed` | `42` | Plan and tie-breaking seed |
+| `lucb_prioritization` | `strict` | Strict evidence reset, or experimental `decay_priority` scheduling without historical evidence in a Wilson interval |
+
+Each feedback event writes a sanitized `lucb_audit_*.json` record beneath the
+configured run directory. It includes configuration, model fingerprint,
+model-sample and explanation cost, confidence intervals, class coverage,
+selected clients/classes, and stop reason. It deliberately excludes raw rows,
+tokens, and pixels. `legacy_full_scan` is for comparison only and preserves the
+previous full-evaluation flow.
+
 ## What's in this repository
 
 | Track | Feedback signal | Generator | Model | Status |
 | --- | --- | --- | --- | --- |
 | [`tabular/`](tabular/) | SHAP | TVAE (SDV) | 5-layer MLP | ✅ included |
 | [`text/`](text/) | Grad-CAM over tokens | Gemma-2B-it | DistilBERT | ✅ included |
-| Image (CIFAR-10) | Grad-CAM | Diffusion (DDPM) | ResNet-18 | ❌ not in this repo |
+| [`image/`](image/) | Grad-CAM patch coordinates | Diffusion (DDPM) | ResNet-18 | ⚠️ experimental; external assets required |
 
 > The CIFAR-10 experiment from Section 3.2 of the paper is reported in the results below but its code is not part of this repository.
 
@@ -60,6 +95,11 @@ Feedback is not produced every round. It is triggered once enough rounds have pa
 │   ├── dataset/7030/         # server test set + 5 non-IID client shards
 │   ├── tvae_gen.pkl          # pre-trained TVAE generator
 │   └── README.md             # full setup, config and troubleshooting guide
+├── fl_lucb/                  # dependency-free Wilson/LUCB selector and protocol validator
+├── image/                    # experimental CIFAR-10 feedback implementation
+│   ├── server.py             # LUCB or legacy selection, Grad-CAM patch metadata
+│   ├── client_1.py           # canonical runtime; client_2..client_9 are wrappers
+│   └── README.md             # checkpoint/data prerequisites and validation
 └── text/                     # Grad-CAM feedback + Gemma generation
     ├── server_textdata.py    # FedAvg, Grad-CAM token attribution, checkpoints
     ├── client_textdata.py    # DistilBERT training + prompt-driven headline generation
@@ -78,12 +118,13 @@ cd tabular
 conda create -n flgenai-tabular python=3.10 -y && conda activate flgenai-tabular
 pip install -r requirements.txt
 
-# terminal 1 — server (listens on 0.0.0.0:9000)
-python server_tabular.py
+# terminal 1 — server (LUCB abstract feedback is the default)
+python server_tabular.py --selection-mode lucb --feedback-protocol abstract \
+    --log-dir runs/tabular_lucb
 
 # terminal 2..n — one process per client shard
 python client_tabular.py --client-id client1 --train-csv dataset/7030/train1.csv \
-    --server-address 127.0.0.1:9000 --log-dir logs/exp01
+    --server-address 127.0.0.1:9000 --log-dir runs/tabular_lucb
 ```
 
 Requires Python 3.8–3.11 — `torch==2.2.2` has no wheel for 3.12. Use the same `--log-dir` on server and clients so one run's artefacts land together. See [`tabular/README.md`](tabular/README.md) for every config key, the log layout, and troubleshooting (SDV pickle version, numpy BitGenerator, WSL2 OOM).
@@ -94,11 +135,44 @@ Requires Python 3.8–3.11 — `torch==2.2.2` has no wheel for 3.12. Use the sam
 cd text
 pip install -r requirements.txt
 
-python server_textdata.py --num_rounds 30 --ckpt_every 5   # terminal 1
-python client_textdata.py                                  # terminal 2..n
+python server_textdata.py --num-rounds 30 --selection-mode lucb \
+    --feedback-protocol abstract --run-dir runs/text_lucb  # terminal 1
+python client_textdata.py --client-id client0 --train-csv data/client0.csv \
+    --label-map runs/text_lucb/label_map.json --run-dir runs/text_lucb_clients \
+    --server-address 127.0.0.1:8080                        # terminal 2..n
 ```
 
-Before the first run, set the paths at the top of both scripts — `TEST_CSV` in the server, `CSV_PATH` and `DRIVE_ROOT` in the client — and supply your own Hugging Face token (Gemma is a gated model). Set `USE_GRADCAM_FEEDBACK = False` to reproduce the generation-without-feedback baseline. Details in [`text/README.md`](text/README.md).
+Provide a local Hugging Face token for the gated Gemma model when generation is
+enabled. The supplied CSV paths are relative to `text/`; use `--help` for model
+and generation options. Details are in [`text/README.md`](text/README.md).
+
+### Image — experimental CIFAR-10
+
+The image track needs a compatible CIFAR subset layout and
+`image/cifar_diffusion.pth`; neither should be inferred from a fresh clone.
+
+```bash
+cd image
+python server.py --target <target-subset> --clients 9 --selection-mode lucb \
+    --feedback-protocol abstract --mode refine
+python client_1.py --data <client-subset> --cid client1
+```
+
+Use `python server.py --target <target-subset> --validate-config` for startup
+and protocol validation without launching Flower. See [`image/README.md`](image/README.md).
+
+### Reproduce the historical baseline
+
+Use a new run directory and select the explicit baseline mode:
+
+```bash
+python server_tabular.py --selection-mode legacy_full_scan --feedback-protocol legacy \
+    --allow-raw-feedback --log-dir runs/tabular_legacy
+```
+
+Legacy payloads intentionally require `--allow-raw-feedback`; runtime data can
+be sent only after this opt-in, while audit records remain metadata-only. Do not
+write new runs into the historical `result_*` directories.
 
 ---
 
@@ -162,11 +236,23 @@ Tabular shards come from a 70/30 split of the [Bank Customer Churn](https://www.
 
 ## Privacy
 
-- **No client data is shared.** Clients exchange only model weights; their local data never leaves them, and synthetic data is generated locally.
-- **Feedback is an abstraction, not a sample** — masked SHAP features (tabular) or salient token–position pairs (text), where positions are coarse (`beginning` / `middle` / `end`).
-- **One caveat in the tabular implementation:** next to the masked SHAP entries, `server_tabular.py` also sends the matching rows of *the server's own test set* as a `reference` payload, which the client uses to fill in the masked values. That is server-side target-domain data, not client data — but it goes further than the summaries-only description in the paper, so review it before running against a sensitive target set.
+- **Abstract is the default protocol.** Tabular feedback contains weak labels
+  and aggregate feature rankings; text feedback contains labels and coarse
+  salient-position distributions; image feedback contains labels and Grad-CAM
+  patch coordinates. No server target row, target text, or target pixel is
+  included.
+- **Legacy is an explicit compatibility mode.** It requires both
+  `--feedback-protocol legacy` and `--allow-raw-feedback`, emits a warning, and
+  never writes raw material to an audit record.
+- **Audit logs are intentionally metadata-only.** They can be shared for
+  experimental comparison without disclosing the runtime raw legacy payload.
 
-The paper notes differential privacy as future work for putting quantifiable guarantees on the feedback signal.
+The protocol is an engineering privacy boundary, not a formal differential
+privacy guarantee. Differential privacy remains future work.
+
+For a Vietnamese code-to-baseline mapping, configuration reference, privacy
+protocol summary, and verified test record, see
+[`docs/Bao_cao_thay_doi_ky_thuat_LUCB.docx`](docs/Bao_cao_thay_doi_ky_thuat_LUCB.docx).
 
 ---
 

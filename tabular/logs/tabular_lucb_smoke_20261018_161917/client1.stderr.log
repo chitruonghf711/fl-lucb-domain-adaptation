@@ -1,0 +1,27 @@
+2026-10-18 16:19:21.164254: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-10-18 16:19:22.338621: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+C:\Users\vonha\AppData\Local\Programs\Python\Python311\Lib\site-packages\rdt\transformers\utils.py:12: DeprecationWarning: module 'sre_parse' is deprecated
+  import sre_parse  # isort:skip
+[93mWARNING [0m:   DEPRECATED FEATURE: flwr.client.start_numpy_client() is deprecated. 
+	Instead, use `flwr.client.start_client()` by ensuring you first call the `.to_client()` method as shown below: 
+	flwr.client.start_client(
+		server_address='<IP>:<PORT>',
+		client=FlowerClient().to_client(), # <-- where FlowerClient is of type flwr.client.NumPyClient object
+	)
+	Using `start_numpy_client()` is deprecated.
+
+            This is a deprecated feature. It will be removed
+            entirely in future versions of Flower.
+        
+[92mINFO [0m:      
+[92mINFO [0m:      [RUN 0, ROUND ]
+[92mINFO [0m:      Received: train message ce4a483f-fce9-4abe-9227-f8f8b8e5d55a
+[92mINFO [0m:      Sent reply
+[92mINFO [0m:      
+[92mINFO [0m:      [RUN 0, ROUND ]
+[92mINFO [0m:      Received: train message d7e2e812-8740-4b05-aea2-27491716e0ce
+[92mINFO [0m:      Sent reply
+[92mINFO [0m:      
+[92mINFO [0m:      [RUN 0, ROUND ]
+[92mINFO [0m:      Received: reconnect message da050259-4603-4494-a56a-00d153840982
+[92mINFO [0m:      Disconnect and shut down

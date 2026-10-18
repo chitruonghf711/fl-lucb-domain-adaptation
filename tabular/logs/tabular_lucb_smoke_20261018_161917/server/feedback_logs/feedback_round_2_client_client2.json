@@ -1,0 +1,62 @@
+{
+  "feedback": {
+    "client_id": "client2",
+    "domain": "tabular",
+    "feature_ranking": [
+      {
+        "feature": "1",
+        "importance": 0.20199734,
+        "rank": 1
+      },
+      {
+        "feature": "6",
+        "importance": 0.17602192,
+        "rank": 2
+      },
+      {
+        "feature": "10",
+        "importance": 0.11386495,
+        "rank": 3
+      },
+      {
+        "feature": "13",
+        "importance": 0.11281574,
+        "rank": 4
+      },
+      {
+        "feature": "14",
+        "importance": 0.10555802,
+        "rank": 5
+      },
+      {
+        "feature": "3",
+        "importance": 0.09926808,
+        "rank": 6
+      },
+      {
+        "feature": "11",
+        "importance": 0.09425568,
+        "rank": 7
+      },
+      {
+        "feature": "16",
+        "importance": 0.0593073,
+        "rank": 8
+      },
+      {
+        "feature": "12",
+        "importance": 0.05427435,
+        "rank": 9
+      },
+      {
+        "feature": "18",
+        "importance": 0.05363454,
+        "rank": 10
+      }
+    ],
+    "protocol": "abstract",
+    "weak_labels": [
+      1
+    ]
+  }
+}

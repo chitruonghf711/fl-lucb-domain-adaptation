@@ -17,7 +17,14 @@ import tempfile
 import time
 from collections import defaultdict
 from contextlib import contextmanager, nullcontext
+from pathlib import Path
 from typing import Any, Dict, List
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
+from fl_lucb import validate_feedback_payload
 
 import flwr as fl
 import numpy as np
@@ -355,6 +362,50 @@ class SyntheticDataset(torch.utils.data.Dataset):
         return self.images, torch.tensor(self.labels, dtype=torch.long)
 
 
+def normalize_feedback_entries(entries: Any, feedback_protocol: str,
+                               allow_raw_feedback: bool) -> List[Dict[str, Any]]:
+    """Validate image wire payloads before they reach the generation pipeline."""
+
+    if not isinstance(entries, list):
+        raise ValueError("Image feedback must be a list of payload objects")
+    normalized_entries: List[Dict[str, Any]] = []
+    for entry in entries:
+        normalized = validate_feedback_payload(
+            entry,
+            protocol=feedback_protocol,
+            domain="image",
+            allow_raw_feedback=allow_raw_feedback,
+        )
+        if feedback_protocol == "abstract":
+            labels = normalized.get("weak_labels", [])
+            patches = normalized.get("salient_patches", [])
+            grid = normalized.get("patch_grid_size")
+            if len(labels) != 1 or not patches or not isinstance(grid, int):
+                raise ValueError("Abstract image feedback requires one label, a grid, and salient patches")
+            if IMG_SIZE % grid != 0:
+                raise ValueError("Abstract image patch grid must divide the image size")
+            if any(
+                int(item["row"]) >= grid or int(item["column"]) >= grid
+                for item in patches
+            ):
+                raise ValueError("Abstract image patch coordinates exceed the declared grid")
+            normalized_entries.append({
+                "label": int(labels[0]),
+                "grid": grid,
+                "patch": IMG_SIZE // grid,
+                "positions": [
+                    [int(item["row"]), int(item["column"])]
+                    for item in patches
+                ],
+            })
+            continue
+        required = {"label", "grid", "patch", "positions", "values"}
+        if not required.issubset(normalized):
+            raise ValueError("Legacy image feedback is missing required raw-patch fields")
+        normalized_entries.append(dict(normalized))
+    return normalized_entries
+
+
 def build_local_pool(dataset, max_per_class: int = 256):
     pool = defaultdict(list)
     for i in range(len(dataset)):
@@ -373,7 +424,7 @@ def feather_mask(mask: torch.Tensor, radius: int = FEATHER) -> torch.Tensor:
 
 
 def init_and_overwrite(fb_batch: List[Dict[str, Any]], canvas: str = "noise",
-                       local_pool=None, device=None):
+                       local_pool=None, feedback_protocol: str = "legacy", device=None):
     device = device or DEVICE
     b = len(fb_batch)
     x0   = torch.randn(b, 3, IMG_SIZE, IMG_SIZE, device=device)          
@@ -385,12 +436,19 @@ def init_and_overwrite(fb_batch: List[Dict[str, Any]], canvas: str = "noise",
             if imgs is not None and len(imgs):        
                 x0[j] = to_diff(imgs[random.randrange(len(imgs))].to(device))
 
+    if feedback_protocol not in {"abstract", "legacy"}:
+        raise ValueError(f"Unsupported feedback protocol: {feedback_protocol}")
+
     for j, fb in enumerate(fb_batch):
         p = int(fb["patch"])
-        vals = to_diff(torch.tensor(fb["values"], dtype=torch.float32, device=device))
-        for (r, c), v in zip(fb["positions"], vals):                   
-            x0[j, :, r * p:(r + 1) * p, c * p:(c + 1) * p] = v
-            mask[j, :, r * p:(r + 1) * p, c * p:(c + 1) * p] = 1.0
+        if feedback_protocol == "legacy":
+            vals = to_diff(torch.tensor(fb["values"], dtype=torch.float32, device=device))
+            for (r, c), v in zip(fb["positions"], vals):
+                x0[j, :, r * p:(r + 1) * p, c * p:(c + 1) * p] = v
+                mask[j, :, r * p:(r + 1) * p, c * p:(c + 1) * p] = 1.0
+        else:
+            for r, c in fb["positions"]:
+                mask[j, :, r * p:(r + 1) * p, c * p:(c + 1) * p] = 1.0
 
     return x0, mask, feather_mask(mask) * mask
 
@@ -432,12 +490,16 @@ def generate_from_feedback(diffusion, feedback: List[Dict[str, Any]],
                            n_per_class: int = N_PER_CLASS, steps: int = DIFF_STEPS,
                            eta: float = DIFF_ETA, batch_size: int = GEN_BATCH,
                            mode: str = DEFAULT_MODE, local_pool=None,
-                           device=None, log_dir=None):
+                           feedback_protocol: str = "legacy", device=None, log_dir=None):
     device = device or DEVICE
     if mode not in REFINE_MODES:
         print(f"[Alg2] mode '{mode}' does not exist, using '{DEFAULT_MODE}' "
               f"(valid: {sorted(REFINE_MODES)})")
         mode = DEFAULT_MODE
+    if feedback_protocol == "abstract" and mode != "refine":
+        raise ValueError("Abstract feedback requires refine mode")
+    if feedback_protocol not in {"abstract", "legacy"}:
+        raise ValueError(f"Unsupported feedback protocol: {feedback_protocol}")
     cfg = REFINE_MODES[mode]
     diffusion.to(device).eval()
 
@@ -449,7 +511,19 @@ def generate_from_feedback(diffusion, feedback: List[Dict[str, Any]],
     for y, items in by_class.items():
         made, cursor = 0, 0
         has_local = bool(local_pool and len(local_pool.get(y, [])))
-        canvas = cfg["canvas"] if (cfg["canvas"] == "noise" or has_local) else "noise"
+        if feedback_protocol == "abstract" and not has_local:
+            fallback = generate_without_feedback(
+                diffusion, {y: n_per_class}, steps=steps, eta=eta,
+                batch_size=batch_size, device=device, log_dir=log_dir,
+            )
+            if fallback is not None:
+                imgs.append(fallback.images)
+                lbls.extend(fallback.labels)
+            print(f"[Alg2/abstract] class {y}: no local anchor, used class-conditional fallback")
+            continue
+        canvas = "local" if feedback_protocol == "abstract" else (
+            cfg["canvas"] if (cfg["canvas"] == "noise" or has_local) else "noise"
+        )
         print(f"[Alg2/{mode}] class {y}: {n_per_class} images | {len(items)} feedback elements "
               f"| canvas={canvas} t0={cfg['strength']}")
 
@@ -458,7 +532,9 @@ def generate_from_feedback(diffusion, feedback: List[Dict[str, Any]],
             batch = [items[(cursor + i) % len(items)] for i in range(b)]  
             cursor += b
 
-            x0, m_hard, m_soft = init_and_overwrite(batch, canvas, local_pool, device)  
+            x0, m_hard, m_soft = init_and_overwrite(
+                batch, canvas, local_pool, feedback_protocol=feedback_protocol, device=device
+            )
             y_t = torch.full((b,), y, dtype=torch.long, device=device)
             gen = refine(diffusion, x0, y_t, steps=steps, eta=eta,                     
                          strength=cfg["strength"], forward_diffuse=cfg["forward_diffuse"],
@@ -690,6 +766,16 @@ class FlowerClient(fl.client.NumPyClient):
 
         feedback = json.loads(config.get("feedback", "[]"))
         if feedback:
+            feedback_protocol = str(config.get("feedback_protocol", "legacy"))
+            if feedback_protocol == "legacy" and not bool(config.get("allow_raw_feedback", False)):
+                raise ValueError("Legacy feedback requires explicit raw-feedback permission")
+            if feedback_protocol == "legacy":
+                print(f"[Client {self.cid}] Warning: using explicitly enabled legacy raw-patch feedback")
+            feedback = normalize_feedback_entries(
+                feedback,
+                feedback_protocol=feedback_protocol,
+                allow_raw_feedback=bool(config.get("allow_raw_feedback", False)),
+            )
             top_m = int(config.get("top_m", len(feedback)))
             feedback = sorted(feedback, key=lambda f: f.get("client_prob", 0.0),
                               reverse=True)[:top_m]
@@ -697,7 +783,10 @@ class FlowerClient(fl.client.NumPyClient):
             os.makedirs(CLIENT_LOG_DIR, exist_ok=True)
             with open(os.path.join(CLIENT_LOG_DIR,
                                    f"feedback_{self.cid}.json"), "w") as f:
-                json.dump([{k: v for k, v in fb.items() if k != "values"} for fb in feedback],
+                json.dump([
+                    {k: v for k, v in fb.items() if k not in {"values", "sample_id"}}
+                    for fb in feedback
+                ],
                           f, indent=2)
 
             classes = sorted({int(fb["label"]) for fb in feedback})
@@ -707,12 +796,15 @@ class FlowerClient(fl.client.NumPyClient):
             if mode not in REFINE_MODES:
                 print(f"[Client {self.cid}] unknown mode '{mode}' -> using '{DEFAULT_MODE}'")
                 mode = DEFAULT_MODE
+            if feedback_protocol == "abstract" and mode != "refine":
+                raise ValueError("Abstract feedback requires refine mode")
             d_gen = generate_from_feedback(
                 self.diffusion, feedback,
                 n_per_class=int(config.get("n_per_class", N_PER_CLASS)),
                 steps=int(config.get("diff_steps", DIFF_STEPS)),
                 mode=mode,
                 local_pool=self.local_pool if REFINE_MODES[mode]["canvas"] == "local" else None,
+                feedback_protocol=feedback_protocol,
                 device=self.device,
                 log_dir=os.path.join(CLIENT_LOG_DIR, self.cid, "generated"),
             )

@@ -1,0 +1,32 @@
+2026-10-18 16:18:09.824949: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-10-18 16:18:10.884911: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+[92mINFO [0m:      Starting Flower server, config: num_rounds=2, no round_timeout
+[92mINFO [0m:      Flower ECE: gRPC server running (2 rounds), SSL is disabled
+[92mINFO [0m:      [INIT]
+[92mINFO [0m:      Using initial global parameters provided by strategy
+[92mINFO [0m:      Evaluating initial global parameters
+[92mINFO [0m:      initial parameters (loss, other metrics): 0.7117015681266785, {'accuracy': 0.20366666666666666}
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 1]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+[93mWARNING [0m:   No fit_metrics_aggregation_fn provided
+[92mINFO [0m:      fit progress: (1, 0.5193115596771241, {'accuracy': 0.7963333333333333}, 5.801417499998934)
+[92mINFO [0m:      configure_evaluate: no clients selected, skipping evaluation
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 2]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+[92mINFO [0m:      fit progress: (2, 0.45158392333984376, {'accuracy': 0.7963333333333333}, 6.531330800004071)
+[92mINFO [0m:      configure_evaluate: no clients selected, skipping evaluation
+[92mINFO [0m:      
+[92mINFO [0m:      [SUMMARY]
+[92mINFO [0m:      Run finished 2 rounds in 6.53s
+[92mINFO [0m:      History (loss, centralized):
+[92mINFO [0m:      	('\tround 0: 0.7117015681266785\n'
+[92mINFO [0m:      	 '\tround 1: 0.5193115596771241\n'
+[92mINFO [0m:      	 '\tround 2: 0.45158392333984376\n')History (metrics, centralized):
+[92mINFO [0m:      	{'accuracy': [(0, 0.20366666666666666),
+[92mINFO [0m:      	              (1, 0.7963333333333333),
+[92mINFO [0m:      	              (2, 0.7963333333333333)]}
+[92mINFO [0m:      

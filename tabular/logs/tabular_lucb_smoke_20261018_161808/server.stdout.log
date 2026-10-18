@@ -1,0 +1,13 @@
+[SERVER] Logging to E:\FL\reproduce_code\tabular\logs\tabular_lucb_smoke_20261018_161808\server
+[SERVER] Loading target-domain test data...
+[SERVER] System information:
+[SERVER] Platform: Windows-10-10.0.26300-SP0
+[SERVER] Processor: AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD
+[SERVER] CPU Cores: 6
+[SERVER] CPU Threads: 12
+[SERVER] RAM (GB): 31.93
+[SERVER] Starting Flower server...
+[SERVER] Training summary saved to E:\FL\reproduce_code\tabular\logs\tabular_lucb_smoke_20261018_161808\server
+[SERVER] Global monitoring saved to E:\FL\reproduce_code\tabular\logs\tabular_lucb_smoke_20261018_161808\server\global_monitoring.jsonl
+[SERVER] Sanitized audit saved to E:\FL\reproduce_code\tabular\logs\tabular_lucb_smoke_20261018_161808\server\audit
+[SERVER] Total execution time: 6.73 seconds

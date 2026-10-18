@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Domain Adaptation of Federated Learning by Data Generation and Server Feedback</title>
-<meta name="description" content="MIWAI 2025 — A feedback-driven federated learning framework where the server distils Grad-CAM/SHAP signals from the target domain and clients generate synthetic data from them.">
-<meta property="og:title" content="Domain Adaptation of Federated Learning by Data Generation and Server Feedback">
-<meta property="og:description" content="MIWAI 2025 (LNAI 16354, pp. 272-283) — server-side feedback + client-side generative augmentation for federated domain adaptation.">
+<title>Điều chỉnh miền trong học liên kết bằng sinh dữ liệu và phản hồi từ máy chủ</title>
+<meta name="description" content="MIWAI 2025 — Khung học liên kết dựa trên phản hồi, trong đó máy chủ chắt lọc tín hiệu Grad-CAM/SHAP từ miền đích và máy khách sinh dữ liệu tổng hợp từ các tín hiệu này.">
+<meta property="og:title" content="Điều chỉnh miền trong học liên kết bằng sinh dữ liệu và phản hồi từ máy chủ">
+<meta property="og:description" content="MIWAI 2025 (LNAI 16354, tr. 272–283) — phản hồi phía máy chủ kết hợp tăng cường sinh dữ liệu phía máy khách cho điều chỉnh miền trong học liên kết.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://caodien2003.github.io/flgenai/">
 <meta property="og:image" content="https://caodien2003.github.io/flgenai/assets/text_result.png">
@@ -130,7 +130,7 @@ td:not(:first-child),th:not(:first-child){text-align:right;font-variant-numeric:
 tbody tr:last-child td{border-bottom:0}
 tr.ours{background:var(--accent-soft)}
 tr.ours td{font-weight:650;color:var(--ink)}
-tr.ours td:first-child::after{content:"OURS";font-size:9.5px;letter-spacing:.08em;background:var(--accent);color:#fff;padding:2px 6px;border-radius:4px;margin-left:9px;vertical-align:middle;font-weight:700}
+tr.ours td:first-child::after{content:"CỦA CHÚNG TÔI";font-size:9.5px;letter-spacing:.08em;background:var(--accent);color:#fff;padding:2px 6px;border-radius:4px;margin-left:9px;vertical-align:middle;font-weight:700}
 
 /* stats */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
@@ -177,43 +177,43 @@ footer .sep{margin:0 8px;opacity:.5}
   <div class="wrap">
     <a class="brand" href="#top">
       <img class="mark" src="assets/logo-256.png" alt="" width="26" height="26">
-      <span>FL · Server Feedback</span>
+      <span>FL · Phản hồi từ máy chủ</span>
     </a>
     <div class="links">
-      <a href="#abstract">Abstract</a>
-      <a href="#method">Method</a>
-      <a href="#results">Results</a>
-      <a href="#code">Code</a>
-      <a href="#cite">Cite</a>
+      <a href="#abstract">Tóm tắt</a>
+      <a href="#method">Phương pháp</a>
+      <a href="#results">Kết quả</a>
+      <a href="#code">Mã nguồn</a>
+      <a href="#cite">Trích dẫn</a>
     </div>
   </div>
 </nav>
 
 <header class="hero">
   <div class="wrap">
-    <span class="venue">MIWAI 2025 · LNAI 16354 · pp. 272–283</span>
-    <h1>Domain Adaptation of Federated Learning by Data Generation and Server Feedback</h1>
+    <span class="venue">MIWAI 2025 · LNAI 16354 · tr. 272–283</span>
+    <h1>Điều chỉnh miền trong học liên kết bằng sinh dữ liệu và phản hồi từ máy chủ</h1>
     <p class="authors">
       Phuong-Anh Vu<sup>1</sup>, Kim-Tinh Phan<sup>1</sup>, Cao-Dien Nguyen<sup>1</sup>,
       Tien-Dung Cao<sup>1</sup>✉, Le Trieu Phong<sup>2</sup>, Ngoc-Thai Nguyen<sup>3</sup>
     </p>
     <p class="affil">
-      <sup>1</sup> School of Information Technology, Tan Tao University, Tay Ninh, Vietnam<br>
-      <sup>2</sup> National Institute of Information and Communications Technology (NICT), Tokyo, Japan<br>
-      <sup>3</sup> Viettel Solutions, Ho Chi Minh City, Vietnam
+      <sup>1</sup> Trường Công nghệ Thông tin, Đại học Tân Tạo, Tây Ninh, Việt Nam<br>
+      <sup>2</sup> Viện Quốc gia về Công nghệ Thông tin và Truyền thông (NICT), Tokyo, Nhật Bản<br>
+      <sup>3</sup> Viettel Solutions, Thành phố Hồ Chí Minh, Việt Nam
     </p>
     <div class="btns">
       <a class="btn primary" href="https://doi.org/10.1007/978-981-95-4960-3_22" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
-        Paper (Springer)
+        Bài báo (Springer)
       </a>
       <a class="btn" href="https://github.com/CaoDien2003/flgenai" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg>
-        Code
+        Mã nguồn
       </a>
       <a class="btn" href="#cite">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3-3 3-9 0-12"/><path d="M14 21c3-3 3-9 0-12"/></svg>
-        BibTeX
+        Trích dẫn BibTeX
       </a>
     </div>
   </div>
@@ -221,30 +221,30 @@ footer .sep{margin:0 8px;opacity:.5}
 
 <section id="abstract">
   <div class="wrap">
-    <h2><span class="num">01</span> Abstract</h2>
+    <h2><span class="num">01</span> Tóm tắt</h2>
     <div class="abstract">
-      <p>Federated learning (FL) enables collaborative model training across distributed clients without requiring centralized access to local data. However, it faces significant challenges under <strong>domain shift</strong>, where discrepancies between client data distributions and deployment environments might degrade model performance.</p>
-      <p>We introduce a <strong>feedback-driven framework</strong> for domain adaptation in federated settings. The server performs domain analysis to detect distributional shifts during validation and generates lightweight feedback signals — <strong>Grad-CAM</strong> and <strong>SHAP</strong> — that highlight domain-specific patterns. These signals are transmitted to clients as adaptation cues, enabling more targeted local training.</p>
-      <p>The framework also supports <strong>client-side data generation</strong> with modality-appropriate generative models: variational autoencoders for tabular data, diffusion models for images, and language models for text. Combining server-guided feedback with client-side adaptation and augmentation yields consistent gains over standard FL baselines across diverse tasks and data modalities.</p>
+      <p>Học liên kết (FL) cho phép huấn luyện mô hình cộng tác trên các máy khách phân tán mà không cần truy cập tập trung vào dữ liệu cục bộ. Tuy nhiên, phương pháp này gặp nhiều thách thức khi có <strong>dịch chuyển miền</strong>, tức khác biệt giữa phân phối dữ liệu của máy khách và môi trường triển khai có thể làm suy giảm hiệu năng mô hình.</p>
+      <p>Chúng tôi giới thiệu một <strong>khung dựa trên phản hồi</strong> để điều chỉnh miền trong bối cảnh học liên kết. Máy chủ thực hiện phân tích miền nhằm phát hiện thay đổi phân phối trong quá trình kiểm định và tạo các tín hiệu phản hồi gọn nhẹ — <strong>Grad-CAM</strong> và <strong>SHAP</strong> — làm nổi bật các mẫu đặc trưng theo miền. Những tín hiệu này được truyền tới máy khách như gợi ý điều chỉnh, giúp việc huấn luyện cục bộ có mục tiêu hơn.</p>
+      <p>Khung này cũng hỗ trợ <strong>sinh dữ liệu ở phía máy khách</strong> bằng các mô hình sinh phù hợp với từng loại dữ liệu: tự mã hóa biến phân cho dữ liệu dạng bảng, mô hình khuếch tán cho ảnh và mô hình ngôn ngữ cho văn bản. Việc kết hợp phản hồi do máy chủ dẫn dắt với điều chỉnh và tăng cường phía máy khách đem lại cải thiện ổn định so với các đường cơ sở FL tiêu chuẩn trên nhiều tác vụ và loại dữ liệu.</p>
     </div>
 
-    <h3>Contributions</h3>
+    <h3>Đóng góp</h3>
     <div class="grid">
       <div class="card">
-        <h4><span class="dot"></span>Server-side domain analysis</h4>
-        <p>The server observes domain shift during validation to detect discrepancies between the training and target domains.</p>
+        <h4><span class="dot"></span>Phân tích miền phía máy chủ</h4>
+        <p>Máy chủ quan sát dịch chuyển miền trong quá trình kiểm định để phát hiện khác biệt giữa miền huấn luyện và miền đích.</p>
       </div>
       <div class="card">
-        <h4><span class="dot"></span>Lightweight feedback</h4>
-        <p>Grad-CAM / SHAP attributions become statistical summaries — never raw samples — reducing exposure of sensitive information.</p>
+        <h4><span class="dot"></span>Phản hồi gọn nhẹ</h4>
+        <p>Độ đóng góp Grad-CAM / SHAP được chuyển thành các bản tóm tắt thống kê — không bao giờ là mẫu thô — để giảm nguy cơ lộ thông tin nhạy cảm.</p>
       </div>
       <div class="card">
-        <h4><span class="dot"></span>Client-side generation</h4>
-        <p>Feedback conditions a TVAE, diffusion model, or LLM so each client synthesizes data aimed at the target domain.</p>
+        <h4><span class="dot"></span>Sinh dữ liệu phía máy khách</h4>
+        <p>Phản hồi định hướng TVAE, mô hình khuếch tán hoặc LLM để mỗi máy khách tổng hợp dữ liệu hướng tới miền đích.</p>
       </div>
       <div class="card">
-        <h4><span class="dot"></span>Improved generalization</h4>
-        <p>Narrowing the source–target gap produces a more robust global model under non-IID conditions.</p>
+        <h4><span class="dot"></span>Cải thiện khả năng khái quát hóa</h4>
+        <p>Thu hẹp khoảng cách nguồn–đích tạo ra mô hình toàn cục vững chắc hơn trong điều kiện non-IID.</p>
       </div>
     </div>
   </div>
@@ -252,11 +252,11 @@ footer .sep{margin:0 8px;opacity:.5}
 
 <section id="method">
   <div class="wrap">
-    <h2><span class="num">02</span> Method</h2>
-    <p class="lede">The server holds a test set representing the <em>target domain</em>. Clients train on local shards that may differ from it. Each feedback cycle turns the server's view of that gap into a compact, interpretable signal.</p>
+    <h2><span class="num">02</span> Phương pháp</h2>
+    <p class="lede">Máy chủ giữ một tập kiểm tra đại diện cho <em>miền đích</em>. Các máy khách huấn luyện trên những phân mảnh cục bộ có thể khác với tập này. Mỗi chu kỳ phản hồi biến góc nhìn của máy chủ về khoảng cách đó thành một tín hiệu gọn và có thể diễn giải.</p>
 
     <div class="diagram">
-      <svg viewBox="0 0 900 344" role="img" aria-label="Feedback loop: clients send local models to the server, which aggregates, evaluates on the target test set, computes attributions, and returns top-k feature feedback for each client's worst misclassifications.">
+      <svg viewBox="0 0 900 344" role="img" aria-label="Vòng phản hồi: máy khách gửi mô hình cục bộ đến máy chủ; máy chủ tổng hợp, đánh giá trên tập kiểm tra đích, tính độ đóng góp và trả về phản hồi top-k đặc trưng cho các lỗi phân loại nghiêm trọng nhất của từng máy khách.">
         <defs>
           <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M0 0 L10 5 L0 10 z" class="dg-head"/>
@@ -265,63 +265,63 @@ footer .sep{margin:0 8px;opacity:.5}
 
         <!-- CLIENTS -->
         <rect x="14" y="44" width="200" height="262" rx="12" class="dg-group"/>
-        <text x="114" y="70" text-anchor="middle" class="dg-title">CLIENTS</text>
+        <text x="114" y="70" text-anchor="middle" class="dg-title">MÁY KHÁCH</text>
         <rect x="34" y="86" width="160" height="40" rx="8" class="dg-box"/>
-        <text x="114" y="103" text-anchor="middle" class="dg-h">Local data (non-IID)</text>
-        <text x="114" y="118" text-anchor="middle" class="dg-t">private, never shared</text>
+        <text x="114" y="103" text-anchor="middle" class="dg-h">Dữ liệu cục bộ (non-IID)</text>
+        <text x="114" y="118" text-anchor="middle" class="dg-t">riêng tư, không bao giờ chia sẻ</text>
 
         <rect x="34" y="138" width="160" height="40" rx="8" class="dg-box"/>
-        <text x="114" y="155" text-anchor="middle" class="dg-h">Generator G</text>
-        <text x="114" y="170" text-anchor="middle" class="dg-t">TVAE · Diffusion · LLM</text>
+        <text x="114" y="155" text-anchor="middle" class="dg-h">Bộ sinh G</text>
+        <text x="114" y="170" text-anchor="middle" class="dg-t">TVAE · Khuếch tán · LLM</text>
 
         <rect x="34" y="190" width="160" height="54" rx="8" class="dg-box"/>
-        <text x="114" y="208" text-anchor="middle" class="dg-h">Inject x̄ at position p</text>
-        <text x="114" y="223" text-anchor="middle" class="dg-t">into a noisy input x̂,</text>
-        <text x="114" y="238" text-anchor="middle" class="dg-t">then G(x̂, y) → synthetic</text>
+        <text x="114" y="208" text-anchor="middle" class="dg-h">Chèn x̄ tại vị trí p</text>
+        <text x="114" y="223" text-anchor="middle" class="dg-t">vào đầu vào nhiễu x̂,</text>
+        <text x="114" y="238" text-anchor="middle" class="dg-t">sau đó G(x̂, y) → dữ liệu tổng hợp</text>
 
         <rect x="34" y="256" width="160" height="34" rx="8" class="dg-hl"/>
-        <text x="114" y="277" text-anchor="middle" class="dg-h dg-a">Train on D_local ∪ D_g</text>
+        <text x="114" y="277" text-anchor="middle" class="dg-h dg-a">Huấn luyện trên D_local ∪ D_g</text>
 
         <!-- SERVER -->
         <rect x="330" y="44" width="248" height="262" rx="12" class="dg-group"/>
-        <text x="454" y="70" text-anchor="middle" class="dg-title">SERVER</text>
+        <text x="454" y="70" text-anchor="middle" class="dg-title">MÁY CHỦ</text>
         <rect x="350" y="86" width="208" height="34" rx="8" class="dg-box"/>
-        <text x="454" y="107" text-anchor="middle" class="dg-h">1. Aggregate → W_g (FedAvg)</text>
+        <text x="454" y="107" text-anchor="middle" class="dg-h">1. Tổng hợp → W_g (FedAvg)</text>
 
         <rect x="350" y="130" width="208" height="34" rx="8" class="dg-box"/>
-        <text x="454" y="151" text-anchor="middle" class="dg-h">2. Evaluate on target D_t</text>
+        <text x="454" y="151" text-anchor="middle" class="dg-h">2. Đánh giá trên D_t đích</text>
 
         <rect x="350" y="174" width="208" height="48" rx="8" class="dg-box"/>
-        <text x="454" y="192" text-anchor="middle" class="dg-h">3. Pick most-trusted model</text>
-        <text x="454" y="209" text-anchor="middle" class="dg-t">correct label ∧ highest prob.</text>
+        <text x="454" y="192" text-anchor="middle" class="dg-h">3. Chọn mô hình đáng tin nhất</text>
+        <text x="454" y="209" text-anchor="middle" class="dg-t">nhãn đúng ∧ xác suất cao nhất</text>
 
         <rect x="350" y="232" width="208" height="48" rx="8" class="dg-box"/>
         <text x="454" y="250" text-anchor="middle" class="dg-h">4. Grad-CAM / SHAP</text>
-        <text x="454" y="267" text-anchor="middle" class="dg-t">→ top-k features + label</text>
+        <text x="454" y="267" text-anchor="middle" class="dg-t">→ top-k đặc trưng + nhãn</text>
 
         <!-- FEEDBACK PACKET -->
         <rect x="640" y="100" width="244" height="152" rx="12" class="dg-gold"/>
-        <text x="762" y="126" text-anchor="middle" class="dg-title dg-g">FEEDBACK PACKET</text>
-        <text x="762" y="150" text-anchor="middle" class="dg-h">for each client c</text>
-        <text x="762" y="171" text-anchor="middle" class="dg-t">top-m confidently</text>
-        <text x="762" y="187" text-anchor="middle" class="dg-t">misclassified samples</text>
-        <text x="762" y="211" text-anchor="middle" class="dg-t">(x̄ top-k features,</text>
-        <text x="762" y="227" text-anchor="middle" class="dg-t">p positions, y label)</text>
-        <text x="762" y="245" text-anchor="middle" class="dg-t dg-i">summaries, not client data</text>
+        <text x="762" y="126" text-anchor="middle" class="dg-title dg-g">GÓI PHẢN HỒI</text>
+        <text x="762" y="150" text-anchor="middle" class="dg-h">cho từng máy khách c</text>
+        <text x="762" y="171" text-anchor="middle" class="dg-t">top-m mẫu bị phân loại</text>
+        <text x="762" y="187" text-anchor="middle" class="dg-t">sai với độ tin cậy cao</text>
+        <text x="762" y="211" text-anchor="middle" class="dg-t">(x̄: top-k đặc trưng,</text>
+        <text x="762" y="227" text-anchor="middle" class="dg-t">p: vị trí, y: nhãn)</text>
+        <text x="762" y="245" text-anchor="middle" class="dg-t dg-i">tóm tắt, không dữ liệu thô</text>
 
         <!-- ARROWS -->
         <path d="M216 122 L326 104" class="dg-arrow" marker-end="url(#ah)"/>
         <path d="M578 256 L636 218" class="dg-arrow" marker-end="url(#ah)"/>
         <path d="M762 100 L762 26 L114 26 L114 82" class="dg-arrow" marker-end="url(#ah)"/>
         <text x="272" y="104" text-anchor="middle" class="dg-lbl">W_i</text>
-        <text x="611" y="226" text-anchor="middle" class="dg-lbl">build</text>
-        <text x="438" y="20" text-anchor="middle" class="dg-lbl">W_g + feedback → clients</text>
+        <text x="611" y="226" text-anchor="middle" class="dg-lbl">tạo</text>
+        <text x="438" y="20" text-anchor="middle" class="dg-lbl">W_g + phản hồi → máy khách</text>
       </svg>
     </div>
-    <figcaption><b>The loop.</b> Feedback is not produced every round — it is triggered when enough rounds have passed, when client models start overfitting locally, or when the global model's accuracy on the server test set plateaus or drops.</figcaption>
+    <figcaption><b>Vòng lặp.</b> Phản hồi không được tạo ở mọi vòng — nó được kích hoạt khi đã qua đủ số vòng, khi các mô hình máy khách bắt đầu quá khớp cục bộ, hoặc khi độ chính xác của mô hình toàn cục trên tập kiểm tra của máy chủ chững lại hay giảm.</figcaption>
 
     <div class="algo">
-      <div class="algo-head"><span>ALG. 1</span>Server-side feedback computation</div>
+      <div class="algo-head"><span>THUẬT TOÁN 1</span>Tính toán phản hồi phía máy chủ</div>
       <div class="algo-body"><pre><span class="kw">Require:</span> {W_i}ᴺ local models; D_t test set; C clients; k, m positive integers
  1: W_g ← aggregate(W_i)                       <span class="cm">▷ FedAvg or any strategy</span>
  2: <span class="kw">if</span> feedback generation is enabled <span class="kw">then</span>
@@ -349,7 +349,7 @@ footer .sep{margin:0 8px;opacity:.5}
     </div>
 
     <div class="algo">
-      <div class="algo-head"><span>ALG. 2</span>Client-side abstract data generation and training</div>
+      <div class="algo-head"><span>THUẬT TOÁN 2</span>Sinh dữ liệu trừu tượng và huấn luyện phía máy khách</div>
       <div class="algo-body"><pre><span class="kw">Require:</span> G generative model; F feedback; D_local client data; N samples to generate
  1: D_g ← ∅
  2: D_aug ← D_local
@@ -364,80 +364,80 @@ footer .sep{margin:0 8px;opacity:.5}
 11: train the local model on D_aug             <span class="cm">▷ real + synthetic</span></pre></div>
     </div>
 
-    <h3>What <em>top-k features</em> means per modality</h3>
+    <h3>Ý nghĩa của <em>top-k đặc trưng</em> theo từng loại dữ liệu</h3>
     <div class="track">
-      <div class="tag">Tabular</div>
-      <div class="body"><b>SHAP</b> selects the top contributing feature values with their column names. The client writes them into a noise vector at the matching columns and passes it through a <b>TVAE</b>.</div>
+      <div class="tag">Dạng bảng</div>
+      <div class="body"><b>SHAP</b> chọn các giá trị đặc trưng đóng góp nhiều nhất cùng tên cột của chúng. Máy khách ghi chúng vào một vector nhiễu tại các cột tương ứng rồi đưa qua <b>TVAE</b>.</div>
     </div>
     <div class="track">
-      <div class="tag">Image</div>
-      <div class="body"><b>Grad-CAM</b> gives top activation regions with spatial positions. The client overwrites those pixel regions in a noise image and refines it with a <b>diffusion model</b>.</div>
+      <div class="tag">Ảnh</div>
+      <div class="body"><b>Grad-CAM</b> cho các vùng kích hoạt quan trọng cùng vị trí không gian. Máy khách ghi đè những vùng điểm ảnh đó trong một ảnh nhiễu và tinh chỉnh ảnh bằng <b>mô hình khuếch tán</b>.</div>
     </div>
     <div class="track">
-      <div class="tag">Text</div>
-      <div class="body"><b>Grad-CAM</b> over tokens yields the most influential token–position pairs. They fill a prompt template passed to <b>Gemma</b>; generated headlines are kept only if the local model predicts the expected class, all feedback tokens appear, and the headline is not a duplicate.</div>
+      <div class="tag">Văn bản</div>
+      <div class="body"><b>Grad-CAM</b> trên các token tạo ra những cặp token–vị trí có ảnh hưởng lớn nhất. Chúng điền vào một mẫu lời nhắc đưa cho <b>Gemma</b>; tiêu đề được sinh chỉ được giữ lại nếu mô hình cục bộ dự đoán đúng lớp kỳ vọng, mọi token phản hồi đều xuất hiện và tiêu đề không trùng lặp.</div>
     </div>
   </div>
 </section>
 
 <section id="results">
   <div class="wrap">
-    <h2><span class="num">03</span> Results</h2>
-    <p class="lede">Flower is the FL framework, FedAvg the aggregation rule, in every experiment.</p>
+    <h2><span class="num">03</span> Kết quả</h2>
+    <p class="lede">Trong mọi thí nghiệm, Flower là khung FL và FedAvg là quy tắc tổng hợp.</p>
 
-    <h3>Tabular — Bank Customer Churn</h3>
-    <p>10,000 customers, 18 features, ~80% non-churn. The 70% training split is divided into 5 non-IID client shards; the server holds the 30% test split as the target domain. SHAP drives the feedback; a TVAE pre-trained on the full dataset generates the synthetic rows. 30 rounds.</p>
+    <h3>Dạng bảng — Rời bỏ dịch vụ ngân hàng</h3>
+    <p>10.000 khách hàng, 18 đặc trưng, khoảng 80% không rời bỏ dịch vụ. Phần huấn luyện 70% được chia thành 5 phân mảnh máy khách non-IID; máy chủ giữ 30% phần kiểm tra làm miền đích. SHAP dẫn dắt phản hồi; TVAE được huấn luyện trước trên toàn bộ tập dữ liệu sẽ sinh các hàng tổng hợp. 30 vòng.</p>
     <div class="tablewrap">
       <table>
-        <thead><tr><th>Method</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1-Score</th></tr></thead>
+        <thead><tr><th>Phương pháp</th><th>Độ chính xác</th><th>Độ chính xác dương tính</th><th>Độ bao phủ</th><th>Điểm F1</th></tr></thead>
         <tbody>
-          <tr class="ours"><td>DataGen with Feedback</td><td>0.9280</td><td>0.7770</td><td>0.9067</td><td>0.8369</td></tr>
-          <tr><td>FedAvg without DataGen</td><td>0.8320</td><td>0.6072</td><td>0.4959</td><td>0.5459</td></tr>
-          <tr><td>DataGen without Feedback</td><td>0.8243</td><td>0.5802</td><td>0.4975</td><td>0.5357</td></tr>
-          <tr><td>Centralized Training</td><td>0.8433</td><td>0.4484</td><td>0.6732</td><td>0.5383</td></tr>
+          <tr class="ours"><td>Sinh dữ liệu kèm phản hồi</td><td>0.9280</td><td>0.7770</td><td>0.9067</td><td>0.8369</td></tr>
+          <tr><td>FedAvg không sinh dữ liệu</td><td>0.8320</td><td>0.6072</td><td>0.4959</td><td>0.5459</td></tr>
+          <tr><td>Sinh dữ liệu không phản hồi</td><td>0.8243</td><td>0.5802</td><td>0.4975</td><td>0.5357</td></tr>
+          <tr><td>Huấn luyện tập trung</td><td>0.8433</td><td>0.4484</td><td>0.6732</td><td>0.5383</td></tr>
         </tbody>
       </table>
     </div>
-    <figcaption><b>Table 1.</b> Our method exceeds even centralized training. The paper attributes this to the distributional mismatch itself: the server's test set differs from the client training data, so the gain reflects adaptation to the target distribution rather than a better fit to the training pool.</figcaption>
+    <figcaption><b>Bảng 1.</b> Phương pháp của chúng tôi vượt cả huấn luyện tập trung. Bài báo quy kết điều này cho chính sự không tương thích về phân phối: tập kiểm tra của máy chủ khác dữ liệu huấn luyện của máy khách, nên mức cải thiện phản ánh khả năng điều chỉnh theo phân phối đích thay vì khớp tốt hơn với tập huấn luyện.</figcaption>
 
     <figure>
-      <img src="assets/tabular_distribution.png" alt="Bar chart of the Exited class counts across the server test set and the five client shards, showing uneven, non-IID splits.">
-      <figcaption><b>Figure 1.</b> Label distribution over the shards shipped in this repository — the server test set and clients 1–5 differ in both size and class balance.</figcaption>
+      <img src="assets/tabular_distribution.png" alt="Biểu đồ cột về số lượng lớp Exited trên tập kiểm tra của máy chủ và năm phân mảnh máy khách, cho thấy cách chia không đồng đều, non-IID.">
+      <figcaption><b>Hình 1.</b> Phân phối nhãn trên các phân mảnh đi kèm kho mã này — tập kiểm tra máy chủ và máy khách 1–5 khác nhau cả về kích thước lẫn cân bằng lớp.</figcaption>
     </figure>
 
-    <h3>Image — CIFAR-10</h3>
-    <p>ResNet-18 classifier, diffusion model pre-trained on all 60,000 images, data split into 10 non-IID subsets with one held out as the target set. Grad-CAM supplies the feedback. After 50 communication rounds, our method leads on all three target sets — above FedCOG, data generation without feedback, and FedAvg.</p>
+    <h3>Ảnh — CIFAR-10</h3>
+    <p>Bộ phân loại ResNet-18, mô hình khuếch tán được huấn luyện trước trên toàn bộ 60.000 ảnh, dữ liệu được chia thành 10 tập con non-IID với một tập được giữ lại làm tập đích. Grad-CAM cung cấp phản hồi. Sau 50 vòng giao tiếp, phương pháp của chúng tôi dẫn đầu trên cả ba tập đích — vượt FedCOG, sinh dữ liệu không phản hồi và FedAvg.</p>
     <div class="stats">
-      <div class="stat"><div class="v">92.6%</div><div class="l">Target set 1</div></div>
-      <div class="stat"><div class="v">91.1%</div><div class="l">Target set 5</div></div>
-      <div class="stat"><div class="v">94.3%</div><div class="l">Target set 10</div></div>
+      <div class="stat"><div class="v">92.6%</div><div class="l">Tập đích 1</div></div>
+      <div class="stat"><div class="v">91.1%</div><div class="l">Tập đích 5</div></div>
+      <div class="stat"><div class="v">94.3%</div><div class="l">Tập đích 10</div></div>
     </div>
 
-    <h3>Text — News Category</h3>
-    <p>DistilBERT fine-tuned over 200k+ headlines across 42 categories, split into 6 non-IID subsets (Dirichlet, β = 0.05; five clients plus the server test set). Grad-CAM token feedback drives Gemma-based headline generation.</p>
+    <h3>Văn bản — Nhóm tin tức</h3>
+    <p>DistilBERT được tinh chỉnh trên hơn 200.000 tiêu đề thuộc 42 nhóm, chia thành 6 tập con non-IID (Dirichlet, β = 0.05; năm máy khách cùng tập kiểm tra của máy chủ). Phản hồi token từ Grad-CAM dẫn dắt việc sinh tiêu đề dựa trên Gemma.</p>
     <figure>
-      <img src="assets/text_result.png" alt="Accuracy over 100 rounds: our method climbs steadily to about 0.8 while FedCOG, FedAvg and generation without feedback stay flat near 0.6.">
-      <figcaption><b>Figure 2.</b> The three baselines plateau near 0.6 for the whole run; feedback-guided generation keeps improving and reaches roughly 0.8 by the final rounds.</figcaption>
+      <img src="assets/text_result.png" alt="Độ chính xác qua 100 vòng: phương pháp của chúng tôi tăng đều đến khoảng 0,8, trong khi FedCOG, FedAvg và sinh dữ liệu không phản hồi giữ nguyên gần 0,6.">
+      <figcaption><b>Hình 2.</b> Ba đường cơ sở chững lại quanh 0,6 trong toàn bộ lần chạy; sinh dữ liệu được dẫn dắt bằng phản hồi tiếp tục cải thiện và đạt xấp xỉ 0,8 ở các vòng cuối.</figcaption>
     </figure>
 
-    <h3>Running time</h3>
-    <p>Training starts as ordinary FL and switches on feedback when accuracy drops between consecutive rounds. The server then picks a small subset of clients — typically the three with the lowest accuracy — and flags a few high-error classes for each.</p>
+    <h3>Thời gian chạy</h3>
+    <p>Huấn luyện khởi đầu như FL thông thường và bật phản hồi khi độ chính xác giảm giữa các vòng liên tiếp. Máy chủ sau đó chọn một tập con nhỏ các máy khách — thường là ba máy có độ chính xác thấp nhất — và đánh dấu một vài lớp có lỗi cao cho mỗi máy.</p>
     <ul class="clean">
-      <li><b>Tabular</b> — feedback ≈ 50 s; ≈ 150 s per client per round; under 50 minutes total for 30 rounds.</li>
-      <li><b>CIFAR-10</b> — 200 synthetic images per class (600 total); feedback ≈ 80 s per client; generation up to 900 s. Generation fires in ~16–18 of 50 rounds.</li>
-      <li><b>Text</b> — feedback-driven generation in rounds 9, 20, 27, 47, 52, 74, 86; ≈ 2 h for Grad-CAM and ≈ 5 h for 2,500 samples (vs. 1.5 h without feedback). A plain FedAvg round takes ≈ 743 s; FedCOG ≈ 1,260 s.</li>
+      <li><b>Dạng bảng</b> — phản hồi ≈ 50 giây; ≈ 150 giây cho mỗi máy khách ở mỗi vòng; tổng thời gian dưới 50 phút cho 30 vòng.</li>
+      <li><b>CIFAR-10</b> — 200 ảnh tổng hợp cho mỗi lớp (600 ảnh tổng cộng); phản hồi ≈ 80 giây cho mỗi máy khách; sinh dữ liệu tối đa 900 giây. Sinh dữ liệu được kích hoạt trong khoảng 16–18 trên 50 vòng.</li>
+      <li><b>Văn bản</b> — sinh dữ liệu theo phản hồi ở các vòng 9, 20, 27, 47, 52, 74, 86; ≈ 2 giờ cho Grad-CAM và ≈ 5 giờ cho 2.500 mẫu (so với 1,5 giờ khi không phản hồi). Một vòng FedAvg thông thường mất ≈ 743 giây; FedCOG ≈ 1.260 giây.</li>
     </ul>
   </div>
 </section>
 
 <section id="code">
   <div class="wrap">
-    <h2><span class="num">04</span> Code</h2>
-    <p class="lede">Two runnable implementations live in this repository, each with its own data shards, requirements, and README.</p>
+    <h2><span class="num">04</span> Mã nguồn</h2>
+    <p class="lede">Kho mã này có hai triển khai có thể chạy, mỗi triển khai đi kèm các phân mảnh dữ liệu, yêu cầu và README riêng.</p>
 
-    <div class="note"><b>Scope.</b> The <code class="inl">tabular/</code> (SHAP + TVAE) and <code class="inl">text/</code> (Grad-CAM + Gemma) tracks are included here. The CIFAR-10 / diffusion experiment from Section 3.2 of the paper is not part of this repository.</div>
+    <div class="note"><b>Phạm vi.</b> Các hướng <code class="inl">tabular/</code> (SHAP + TVAE) và <code class="inl">text/</code> (Grad-CAM + Gemma) được đưa vào đây. Thí nghiệm CIFAR-10 / khuếch tán ở Mục 3.2 của bài báo không thuộc kho mã này.</div>
 
-    <h3>Tabular — SHAP feedback + TVAE generation</h3>
+    <h3>Dạng bảng — Phản hồi SHAP + sinh dữ liệu bằng TVAE</h3>
     <div class="code">
       <div class="code-head"><span>bash</span><button class="copy" data-t="cd tabular
 conda create -n flgenai-tabular python=3.10 -y &amp;&amp; conda activate flgenai-tabular
@@ -446,7 +446,7 @@ pip install -r requirements.txt
 python server_tabular.py
 
 python client_tabular.py --client-id client1 --train-csv dataset/7030/train1.csv \
-    --server-address 127.0.0.1:9000 --log-dir logs/exp01">Copy</button></div>
+    --server-address 127.0.0.1:9000 --log-dir logs/exp01">Sao chép</button></div>
       <pre><span class="c"># Python 3.8–3.11 (torch 2.2.2 has no 3.12 wheel)</span>
 cd tabular
 conda create -n flgenai-tabular python=3.10 -y &amp;&amp; conda activate flgenai-tabular
@@ -460,21 +460,21 @@ pip install -r requirements.txt
     --server-address 127.0.0.1:9000 --log-dir logs/exp01</pre>
     </div>
     <ul class="clean">
-      <li>Model: an MLP of five linear layers (input→64→64→32→16→1) shared by server and clients.</li>
-      <li>Feedback fires on plateau (<code class="inl">plateau_window</code>, <code class="inl">plateau_delta</code>) after <code class="inl">min_feedback_round</code>; features below <code class="inl">shap_threshold</code> are masked to NaN before being sent.</li>
-      <li>Clients restore masked features with a locally fitted TVAE, then keep only sampled rows above <code class="inl">cosine_sim_threshold</code>.</li>
-      <li>Alongside the masked entries the server also sends the matching rows of <em>its own test set</em> as a <code class="inl">reference</code> payload, used to fill in the masked values. No client data is shared — but this goes further than the paper's summaries-only description, so review it before deploying on sensitive target data.</li>
-      <li>Everything a run produces lands under one <code class="inl">--log-dir</code>: per-round metrics, timings, feedback JSON, and client logs.</li>
+      <li>Mô hình: một MLP gồm năm tầng tuyến tính (input→64→64→32→16→1) được dùng chung cho máy chủ và máy khách.</li>
+      <li>Phản hồi được kích hoạt khi chững lại (<code class="inl">plateau_window</code>, <code class="inl">plateau_delta</code>) sau <code class="inl">min_feedback_round</code>; các đặc trưng thấp hơn <code class="inl">shap_threshold</code> được che thành NaN trước khi gửi.</li>
+      <li>Máy khách khôi phục các đặc trưng bị che bằng TVAE được khớp cục bộ, sau đó chỉ giữ các hàng được lấy mẫu vượt <code class="inl">cosine_sim_threshold</code>.</li>
+      <li>Cùng với các mục bị che, máy chủ cũng gửi các hàng tương ứng của <em>tập kiểm tra của chính máy chủ</em> dưới dạng payload <code class="inl">reference</code>, dùng để điền các giá trị bị che. Không có dữ liệu máy khách nào được chia sẻ — nhưng cách này vượt ra ngoài mô tả chỉ dùng bản tóm tắt trong bài báo, vì vậy cần xem xét trước khi triển khai với dữ liệu đích nhạy cảm.</li>
+      <li>Mọi đầu ra của một lần chạy nằm trong một <code class="inl">--log-dir</code>: chỉ số theo vòng, thời gian, JSON phản hồi và nhật ký máy khách.</li>
     </ul>
 
-    <h3>Text — Grad-CAM feedback + Gemma generation</h3>
+    <h3>Văn bản — Phản hồi Grad-CAM + sinh dữ liệu bằng Gemma</h3>
     <div class="code">
       <div class="code-head"><span>bash</span><button class="copy" data-t="cd text
 pip install -r requirements.txt
 
 python server_textdata.py --num_rounds 30 --ckpt_every 5
 
-python client_textdata.py">Copy</button></div>
+python client_textdata.py">Sao chép</button></div>
       <pre>cd text
 pip install -r requirements.txt
 
@@ -485,32 +485,32 @@ pip install -r requirements.txt
 <span class="p">python</span> client_textdata.py</pre>
     </div>
     <ul class="clean">
-      <li>Before the first run, set the paths at the top of both scripts — <code class="inl">TEST_CSV</code> in the server, <code class="inl">CSV_PATH</code> and <code class="inl">DRIVE_ROOT</code> in the client — and supply your own Hugging Face token, which Gemma requires.</li>
-      <li>Token feedback keeps everything scoring ≥ 35% of the round's maximum Grad-CAM value, bounded to 3–10 tokens per sample. Positions are coarse — <code class="inl">beginning</code>, <code class="inl">middle</code> or <code class="inl">end</code>, by relative index.</li>
-      <li><code class="inl">USE_GRADCAM_FEEDBACK = False</code> reproduces the generation-without-feedback baseline.</li>
+      <li>Trước lần chạy đầu tiên, hãy đặt các đường dẫn ở đầu cả hai tập lệnh — <code class="inl">TEST_CSV</code> ở máy chủ, <code class="inl">CSV_PATH</code> và <code class="inl">DRIVE_ROOT</code> ở máy khách — rồi cung cấp token Hugging Face của riêng bạn vì Gemma yêu cầu token này.</li>
+      <li>Phản hồi token giữ mọi token đạt điểm ≥ 35% giá trị Grad-CAM lớn nhất của vòng, giới hạn 3–10 token trên mỗi mẫu. Vị trí được chia thô theo chỉ số tương đối: <code class="inl">beginning</code>, <code class="inl">middle</code> hoặc <code class="inl">end</code>.</li>
+      <li><code class="inl">USE_GRADCAM_FEEDBACK = False</code> tái tạo đường cơ sở sinh dữ liệu không phản hồi.</li>
     </ul>
 
-    <h3>Data included</h3>
+    <h3>Dữ liệu đi kèm</h3>
     <div class="tablewrap">
       <table>
-        <thead><tr><th>Shard</th><th>Tabular (rows)</th><th>Text (rows)</th></tr></thead>
+        <thead><tr><th>Phân mảnh</th><th>Dạng bảng (hàng)</th><th>Văn bản (hàng)</th></tr></thead>
         <tbody>
-          <tr><td>Server test set</td><td>3,000</td><td>10,979</td></tr>
-          <tr><td>Client 1</td><td>1,050</td><td>48,740</td></tr>
-          <tr><td>Client 2</td><td>2,100</td><td>69,641</td></tr>
-          <tr><td>Client 3</td><td>700</td><td>31,426</td></tr>
-          <tr><td>Client 4</td><td>2,800</td><td>28,196</td></tr>
-          <tr><td>Client 5</td><td>350</td><td>20,517</td></tr>
+          <tr><td>Tập kiểm tra máy chủ</td><td>3,000</td><td>10,979</td></tr>
+          <tr><td>Máy khách 1</td><td>1,050</td><td>48,740</td></tr>
+          <tr><td>Máy khách 2</td><td>2,100</td><td>69,641</td></tr>
+          <tr><td>Máy khách 3</td><td>700</td><td>31,426</td></tr>
+          <tr><td>Máy khách 4</td><td>2,800</td><td>28,196</td></tr>
+          <tr><td>Máy khách 5</td><td>350</td><td>20,517</td></tr>
         </tbody>
       </table>
     </div>
-    <figcaption>Tabular shards use a 70/30 split of the Bank Customer Churn dataset (19 features + <code class="inl">Exited</code>); text shards carry 42 news categories each with a different dominant set.</figcaption>
+    <figcaption>Các phân mảnh dạng bảng dùng tỷ lệ chia 70/30 của tập dữ liệu rời bỏ dịch vụ ngân hàng (19 đặc trưng + <code class="inl">Exited</code>); mỗi phân mảnh văn bản chứa 42 nhóm tin tức với một tập trội khác nhau.</figcaption>
   </div>
 </section>
 
 <section id="cite">
   <div class="wrap">
-    <h2><span class="num">05</span> Citation</h2>
+    <h2><span class="num">05</span> Trích dẫn</h2>
     <div class="code">
       <div class="code-head"><span>bibtex</span><button class="copy" data-t="@inproceedings{vu2026domain,
   author    = {Vu, Phuong-Anh and Phan, Kim-Tinh and Nguyen, Cao-Dien and Cao, Tien-Dung and Phong, Le Trieu and Nguyen, Ngoc-Thai},
@@ -522,7 +522,7 @@ pip install -r requirements.txt
   publisher = {Springer Nature Singapore},
   year      = {2026},
   doi       = {10.1007/978-981-95-4960-3_22}
-}">Copy</button></div>
+}">Sao chép</button></div>
       <pre>@inproceedings{vu2026domain,
   author    = {Vu, Phuong-Anh and Phan, Kim-Tinh and Nguyen, Cao-Dien and
                Cao, Tien-Dung and Phong, Le Trieu and Nguyen, Ngoc-Thai},
@@ -539,8 +539,8 @@ pip install -r requirements.txt
 }</pre>
     </div>
 
-    <h3>Acknowledgements</h3>
-    <p style="color:var(--ink-2);font-size:14.5px">This research is supported by the Tan Tao University (TTU) Foundation for Science and Technology Development under Grant No. TTU.RS.25.102.003. The work of L. T. Phong is supported in part by the JST CREST Grant JPMJCR21M1, Japan.</p>
+    <h3>Lời cảm ơn</h3>
+    <p style="color:var(--ink-2);font-size:14.5px">Nghiên cứu này được Quỹ Phát triển Khoa học và Công nghệ của Đại học Tân Tạo (TTU) hỗ trợ theo mã tài trợ TTU.RS.25.102.003. Công trình của L. T. Phong được JST CREST, Nhật Bản hỗ trợ một phần theo mã JPMJCR21M1.</p>
   </div>
 </section>
 
@@ -550,9 +550,9 @@ pip install -r requirements.txt
     <span class="sep">·</span>
     <a href="https://doi.org/10.1007/978-981-95-4960-3_22">10.1007/978-981-95-4960-3_22</a>
     <span class="sep">·</span>
-    Built with <a href="https://flower.ai/">Flower</a>, <a href="https://github.com/shap/shap">SHAP</a>, <a href="https://docs.sdv.dev/sdv">SDV</a> and <a href="https://huggingface.co/">Hugging Face</a>
+    Được xây dựng với <a href="https://flower.ai/">Flower</a>, <a href="https://github.com/shap/shap">SHAP</a>, <a href="https://docs.sdv.dev/sdv">SDV</a> và <a href="https://huggingface.co/">Hugging Face</a>
     <br>
-    Contact: <a href="mailto:dung.cao@ttu.edu.vn">dung.cao@ttu.edu.vn</a>
+    Liên hệ: <a href="mailto:dung.cao@ttu.edu.vn">dung.cao@ttu.edu.vn</a>
   </div>
 </footer>
 
@@ -561,7 +561,7 @@ document.querySelectorAll("button.copy").forEach(function (b) {
   b.addEventListener("click", function () {
     navigator.clipboard.writeText(b.dataset.t).then(function () {
       var old = b.textContent;
-      b.textContent = "Copied";
+      b.textContent = "Đã sao chép";
       setTimeout(function () { b.textContent = old; }, 1400);
     });
   });

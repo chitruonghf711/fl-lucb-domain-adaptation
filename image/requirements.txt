@@ -1,6 +1,9 @@
-torch>=2.0
-torchvision>=0.15
-flwr>=1.7,<2.0
-numpy
-tqdm
-Pillow
+# Keep the image runtime reproducible and binary-compatible on Python 3.8-3.11.
+# Install the matching CUDA wheel from the official PyTorch index when GPU support is needed.
+flwr==1.8.0
+protobuf==4.25.3
+torch==2.2.2
+torchvision==0.17.2
+numpy==1.26.4
+tqdm==4.66.4
+Pillow==10.3.0

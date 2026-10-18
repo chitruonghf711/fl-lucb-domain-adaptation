@@ -1,0 +1,6 @@
+[CLIENT] Smoke mode enabled: TVAE setup and generation are skipped.
+[CLIENT] client3 | logging to E:\FL\reproduce_code\tabular\logs\tabular_lucb_smoke_20261018_161917\clients\client3\log_20261018_161934.txt
+[CLIENT] Loading training data from dataset/7030/train3.csv...
+[CLIENT] Connecting to 127.0.0.1:9000...
+[CLIENT] Epoch 1 | Loss: 0.6522
+[CLIENT] Epoch 1 | Loss: 0.4802

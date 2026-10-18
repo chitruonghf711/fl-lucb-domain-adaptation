@@ -1,14 +1,10 @@
 """Federated learning client for the tabular churn task (Flower + PyTorch + SDV).
 
-Each client trains a small MLP on its private CSV shard. When the server detects
-an accuracy plateau it returns SHAP feedback: misclassified test samples in which
-every feature below the importance threshold has been masked out (NaN). The
-client then
-
-1. restores the masked features with a TVAE fitted on its own data,
-2. samples the pre-trained TVAE generator and keeps only the rows that are
-   cosine-similar to the restored feedback,
-3. trains on its own data plus the restored and selected synthetic rows.
+Each client trains a small MLP on its private CSV shard. The default feedback
+protocol sends only weak class labels and aggregate SHAP feature ranks. The
+client generates class-targeted TVAE samples locally and prioritizes sparse
+regions of its own ranked features. The historical masked-value pathway remains
+available only through explicit legacy raw-feedback flags.
 
 Run one process per client, each with its own id and data shard:
 
@@ -21,9 +17,11 @@ import json
 import logging
 import os
 import pickle
+import sys
 import warnings
 from datetime import datetime
-from typing import Any, Dict, List, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 import flwr as fl
 import pandas as pd
@@ -33,6 +31,12 @@ from sdv.metadata import SingleTableMetadata
 from sdv.single_table import TVAESynthesizer
 from sklearn.metrics.pairwise import cosine_similarity
 from torch.utils.data import DataLoader, TensorDataset
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from fl_lucb import validate_feedback_payload
 
 warnings.filterwarnings("ignore")
 
@@ -44,7 +48,7 @@ CONFIG = {
     "train_csv_path": "dataset/7030/train1.csv",  # Default shard, overridden by --train-csv
     "server_address": "127.0.0.1:9000",  # Default address, overridden by --server-address
     "target_column": "Exited",  # Label column in the training CSV
-    "log_dir": "logs/exp01",  # Run log folder, overridden by --log-dir;
+    "log_dir": "logs/lucb_pilot",  # Run log folder, overridden by --log-dir;
                               # this client writes to <log_dir>/clients/<client-id>/
     "gen_model_path": "tvae_gen.pkl",  # Path to the pre-trained TVAE generator
     "epoch": 50,  # Number of training epochs
@@ -56,6 +60,9 @@ CONFIG = {
     "use_feedback": True,  # True = generate based on server feedback; False = ignore feedback
     "gen_multiplier_fixed": 0.1,  # Synthetic data ratio ( use_feedback = False)
                                   # Final Synthetic data ( use_feedback = True)
+    "feedback_protocol": "abstract",  # Default protocol; legacy requires an explicit raw-data acknowledgement
+    "allow_raw_feedback": False,  # Required before this client accepts legacy server payloads
+    "smoke_no_generation": False,  # Test-only: validate feedback while skipping TVAE work
 }
 
 
@@ -69,7 +76,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--server-address", default=CONFIG["server_address"],
                         help="Address of the Flower server, e.g. 127.0.0.1:9000")
     parser.add_argument("--log-dir", default=CONFIG["log_dir"],
-                        help="Run log folder; use the same one as the server, e.g. logs/exp01")
+                        help="Run log folder; use the same one as the server, e.g. logs/lucb_pilot")
+    parser.add_argument("--feedback-protocol", choices=("abstract", "legacy"),
+                        default=CONFIG["feedback_protocol"],
+                        help="Expected server feedback protocol; abstract is the privacy-preserving default")
+    parser.add_argument("--allow-raw-feedback", action="store_true",
+                        help="Required acknowledgement before accepting legacy raw-value feedback")
+    parser.add_argument("--epochs", type=int, default=CONFIG["epoch"],
+                        help="Local training epochs; use 1 for the lightweight smoke run")
+    parser.add_argument("--smoke-no-generation", action="store_true",
+                        help="Test-only: skip TVAE setup and generation but validate received feedback")
     return parser.parse_args()
 
 
@@ -155,6 +171,104 @@ def load_generator(path: str) -> TVAESynthesizer:
 def feedback_to_dataframe(shap_feedback: List[Dict[str, Any]], target_column: str) -> pd.DataFrame:
     """Turn the server's [{features, label}, ...] payload into a DataFrame."""
     return pd.DataFrame([{**item["features"], target_column: item["label"]} for item in shap_feedback])
+
+
+def normalized_abstract_items(payload: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Validate and extract abstract tabular feedback without accepting row values."""
+
+    normalized = validate_feedback_payload(
+        payload, protocol="abstract", allow_raw_feedback=False, domain="tabular"
+    )
+    ranking = list(normalized.get("feature_ranking", []))
+    return [
+        {"label": label, "feature_ranks": ranking}
+        for label in normalized.get("weak_labels", [])
+    ]
+
+
+def ranked_feature_names(item: Dict[str, Any], available_columns: List[str]) -> List[str]:
+    """Return safe feature names ordered by server-side aggregate SHAP rank."""
+
+    names = []
+    for value in item.get("feature_ranks", []):
+        name = value.get("feature") if isinstance(value, dict) else value
+        if isinstance(name, str) and name in available_columns and name not in names:
+            names.append(name)
+    return names
+
+
+def local_sparsity_scores(candidates: pd.DataFrame, local_df: pd.DataFrame,
+                          feature_names: List[str]) -> pd.Series:
+    """Score generated candidates by sparse local regions of ranked features.
+
+    This uses only the client shard and TVAE-generated rows. It receives no
+    feature values from the server, so abstract feedback remains row-free.
+    """
+
+    scores = pd.Series(0.0, index=candidates.index, dtype=float)
+    for rank, feature in enumerate(feature_names, start=1):
+        if feature not in candidates.columns or feature not in local_df.columns:
+            continue
+        weight = 1.0 / rank
+        local_values = local_df[feature].dropna()
+        if local_values.empty:
+            continue
+        numeric_local = pd.to_numeric(local_values, errors="coerce")
+        numeric_candidates = pd.to_numeric(candidates[feature], errors="coerce")
+        if numeric_local.notna().all() and numeric_candidates.notna().any():
+            lower, upper = numeric_local.quantile([0.01, 0.99]).tolist()
+            if lower == upper:
+                continue
+            counts, edges = np.histogram(numeric_local.to_numpy(), bins=10, range=(lower, upper))
+            bins = np.clip(np.searchsorted(edges, numeric_candidates.to_numpy(), side="right") - 1,
+                           0, len(counts) - 1)
+            scores += weight / (1.0 + counts[bins])
+        else:
+            frequencies = local_values.astype(str).value_counts(normalize=True)
+            scores += candidates[feature].astype(str).map(
+                lambda value: 1.0 - float(frequencies.get(value, 0.0))
+            ).fillna(1.0) * weight
+    return scores
+
+
+def collect_abstract_synthetic_samples(generator: TVAESynthesizer, local_df: pd.DataFrame,
+                                       items: List[Dict[str, Any]], base_size: int) -> pd.DataFrame:
+    """Generate class-targeted samples and prefer sparse local ranked-feature regions."""
+
+    required = int(CONFIG["gen_multiplier_fixed"] * base_size)
+    if required <= 0 or not items:
+        return pd.DataFrame(columns=local_df.columns)
+    target_column = CONFIG["target_column"]
+    per_item = max(1, int(np.ceil(required / len(items))))
+    selected_frames = []
+    for item in items:
+        label = item.get("label")
+        feature_names = ranked_feature_names(
+            item, [column for column in local_df.columns if column != target_column]
+        )
+        selected = pd.DataFrame(columns=local_df.columns)
+        for _ in range(CONFIG["max_gen_attempts"]):
+            generated = generator.sample(int(CONFIG["gen_multiplier"] * base_size))
+            if target_column not in generated.columns:
+                logging.warning("Generated data did not contain the target column for abstract feedback")
+                break
+            same_label = generated[generated[target_column].astype(str) == str(label)].copy()
+            if same_label.empty:
+                continue
+            same_label["__local_sparsity_score"] = local_sparsity_scores(
+                same_label, local_df, feature_names
+            )
+            selected = pd.concat([selected, same_label], ignore_index=True)
+            selected = selected.drop_duplicates().sort_values(
+                "__local_sparsity_score", ascending=False
+            ).head(per_item)
+            if len(selected) >= per_item:
+                break
+        if not selected.empty:
+            selected_frames.append(selected.drop(columns=["__local_sparsity_score"], errors="ignore"))
+    if not selected_frames:
+        return pd.DataFrame(columns=local_df.columns)
+    return pd.concat(selected_frames, ignore_index=True).drop_duplicates().head(required)
 
 
 def restore_missing_values(fb_df: pd.DataFrame, synthesizer: TVAESynthesizer) -> pd.DataFrame:
@@ -244,7 +358,7 @@ def train_local_model(model: nn.Module, train_df: pd.DataFrame) -> int:
 # === FLOWER CLIENT DEFINITION ===
 class FLClient(fl.client.NumPyClient):
     def __init__(self, client_id: str, model: nn.Module, train_df: pd.DataFrame,
-                 restore_synthesizer: TVAESynthesizer, generator: TVAESynthesizer):
+                 restore_synthesizer: Optional[TVAESynthesizer], generator: Optional[TVAESynthesizer]):
         self.client_id = client_id
         self.model = model
         self.train_df = train_df
@@ -266,35 +380,69 @@ class FLClient(fl.client.NumPyClient):
     def fit(self, parameters: List[Any], config: Dict[str, Any]) -> Tuple[List[Any], int, Dict[str, Any]]:
         self.set_parameters(parameters)
 
-        shap_feedback = json.loads(config.get("feedback", "[]"))
+        protocol = str(config.get("feedback_protocol", CONFIG["feedback_protocol"]))
+        raw_feedback = json.loads(config.get("feedback", "[]"))
         restored_df = pd.DataFrame()
         selected_samples = pd.DataFrame()
 
-        if CONFIG["use_feedback"] and shap_feedback:
-            logging.info(f"Using feedback: {len(shap_feedback)} samples")
-            fb_df = feedback_to_dataframe(shap_feedback, CONFIG["target_column"])
+        if protocol not in {"abstract", "legacy"}:
+            raise ValueError(f"Unsupported feedback protocol from server: {protocol}")
+        if protocol == "legacy" and not CONFIG["allow_raw_feedback"]:
+            raise ValueError("Legacy feedback was received without --allow-raw-feedback")
 
-            # === RESTORE MISSING VALUES USING TVAE
-            restored_df = restore_missing_values(fb_df, self.restore_synthesizer)
-            logging.info(f"NaN before restore: {fb_df.isna().sum().sum()} "
-                         f"| after restore: {restored_df.isna().sum().sum()}")
-
-            # === REPEATEDLY GENERATE & FILTER SYNTHETIC SAMPLES UNTIL ENOUGH SELECTED
-            selected_samples = collect_synthetic_samples(self.generator, restored_df, len(self.train_df))
-
-            self.train_data = pd.concat([self.train_df, restored_df, selected_samples], ignore_index=True)
-            print(f'[DEBUG] DATA TRAIN CLIENT {len(self.train_df)}')
-            print(f'[DEBUG] SYNTHETIC SAMPLES {len(selected_samples)}')
-            print(f'[DEBUG] RESTORED SAMPLES {len(restored_df)}')
+        if CONFIG["smoke_no_generation"]:
+            if raw_feedback and protocol == "abstract":
+                items = normalized_abstract_items(raw_feedback)
+                logging.info("Smoke mode validated %d abstract weak class summaries", len(items))
+            elif raw_feedback:
+                validate_feedback_payload(
+                    {
+                        "protocol": "legacy", "domain": "tabular",
+                        "weak_labels": [], "shap_feedback": raw_feedback,
+                        "reference": json.loads(config.get("reference", "[]")),
+                    },
+                    protocol="legacy", allow_raw_feedback=True, domain="tabular"
+                )
+                logging.info("Smoke mode validated explicit legacy feedback")
+            self.train_data = self.train_df.copy()
+            logging.info("Smoke mode skipped TVAE generation and trained only on the local shard")
+        elif CONFIG["use_feedback"] and raw_feedback:
+            if self.restore_synthesizer is None or self.generator is None:
+                raise RuntimeError("TVAE synthesizers are required outside --smoke-no-generation mode")
+            if protocol == "abstract":
+                items = normalized_abstract_items(raw_feedback)
+                logging.info("Using abstract feedback for %d weak class summaries", len(items))
+                selected_samples = collect_abstract_synthetic_samples(
+                    self.generator, self.train_df, items, len(self.train_df)
+                )
+                self.train_data = pd.concat([self.train_df, selected_samples], ignore_index=True)
+                print(f"[CLIENT] Abstract feedback selected {len(selected_samples)} local synthetic samples")
+            else:
+                legacy_payload = validate_feedback_payload(
+                    {
+                        "protocol": "legacy", "domain": "tabular",
+                        "weak_labels": [], "shap_feedback": raw_feedback,
+                        "reference": json.loads(config.get("reference", "[]")),
+                    },
+                    protocol="legacy", allow_raw_feedback=True, domain="tabular"
+                )
+                shap_feedback = legacy_payload.get("shap_feedback", [])
+                logging.warning("Using explicit legacy raw-value feedback for %d samples", len(shap_feedback))
+                fb_df = feedback_to_dataframe(shap_feedback, CONFIG["target_column"])
+                restored_df = restore_missing_values(fb_df, self.restore_synthesizer)
+                logging.info("NaN before restore: %d | after restore: %d",
+                             fb_df.isna().sum().sum(), restored_df.isna().sum().sum())
+                selected_samples = collect_synthetic_samples(self.generator, restored_df, len(self.train_df))
+                self.train_data = pd.concat([self.train_df, restored_df, selected_samples], ignore_index=True)
+                print(f"[CLIENT] Legacy feedback selected {len(selected_samples)} synthetic samples")
         else:
-            logging.info("Gen ignore feedback")
+            logging.info("Generating fixed synthetic data without feedback")
+            if self.generator is None:
+                raise RuntimeError("TVAE generator is required outside --smoke-no-generation mode")
 
-            # === GENERATE FIXED SYNTHETIC DATA (no feedback)
             num_gen = int(CONFIG["gen_multiplier_fixed"] * len(self.train_df))
             gen_fixed = self.generator.sample(num_gen)
-            logging.info(f"Generated {num_gen} synthetic samples ignore feedback")
-
-            # === MERGE ALL DATA
+            logging.info("Generated %d fixed synthetic samples", num_gen)
             self.train_data = pd.concat([self.train_df, gen_fixed], ignore_index=True)
 
         logging.info(f"Final train size: Original={len(self.train_df)} | Restored={len(restored_df)} "
@@ -316,6 +464,18 @@ def main() -> None:
     CONFIG["train_csv_path"] = args.train_csv
     CONFIG["server_address"] = args.server_address
     CONFIG["log_dir"] = args.log_dir
+    CONFIG["feedback_protocol"] = args.feedback_protocol
+    CONFIG["allow_raw_feedback"] = bool(args.allow_raw_feedback)
+    CONFIG["epoch"] = args.epochs
+    CONFIG["smoke_no_generation"] = bool(args.smoke_no_generation)
+    if CONFIG["epoch"] <= 0:
+        raise ValueError("--epochs must be positive")
+    if CONFIG["feedback_protocol"] == "legacy" and not CONFIG["allow_raw_feedback"]:
+        raise ValueError("--feedback-protocol legacy requires --allow-raw-feedback")
+    if CONFIG["feedback_protocol"] == "legacy":
+        print("[CLIENT] WARNING: Legacy feedback can contain target-domain raw values.")
+    if CONFIG["smoke_no_generation"]:
+        print("[CLIENT] Smoke mode enabled: TVAE setup and generation are skipped.")
     CONFIG["client_log_dir"] = os.path.join(args.log_dir, "clients", args.client_id)
 
     log_path = setup_logging(CONFIG["client_log_dir"])
@@ -326,11 +486,13 @@ def main() -> None:
     print(f"[CLIENT] Loading training data from {CONFIG['train_csv_path']}...")
     train_df = pd.read_csv(CONFIG["train_csv_path"])
 
-    print("[CLIENT] Fitting the TVAE used to restore masked feedback...")
-    restore_synthesizer = fit_restore_synthesizer(train_df)
-
-    print(f"[CLIENT] Loading the pre-trained generator from {CONFIG['gen_model_path']}...")
-    generator = load_generator(CONFIG["gen_model_path"])
+    restore_synthesizer: Optional[TVAESynthesizer] = None
+    generator: Optional[TVAESynthesizer] = None
+    if not CONFIG["smoke_no_generation"]:
+        print("[CLIENT] Fitting the TVAE used to restore masked feedback...")
+        restore_synthesizer = fit_restore_synthesizer(train_df)
+        print(f"[CLIENT] Loading the pre-trained generator from {CONFIG['gen_model_path']}...")
+        generator = load_generator(CONFIG["gen_model_path"])
 
     model = SimpleNN(train_df.drop(columns=[CONFIG["target_column"]]).shape[1])
     client = FLClient(CONFIG["client_id"], model, train_df, restore_synthesizer, generator)

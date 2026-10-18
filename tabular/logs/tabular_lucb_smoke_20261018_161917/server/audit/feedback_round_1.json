@@ -1,0 +1,2314 @@
+{
+  "boundary_gap": -0.4448091412546282,
+  "budget": 3750,
+  "confidence_bounds": {
+    "client1": {
+      "delta": 7.092198581560284e-05,
+      "estimate": 0.5,
+      "lower": 0.2775954293726859,
+      "successes": 32,
+      "total": 64,
+      "upper": 0.7224045706273141
+    },
+    "client2": {
+      "delta": 7.092198581560284e-05,
+      "estimate": 0.5,
+      "lower": 0.2775954293726859,
+      "successes": 32,
+      "total": 64,
+      "upper": 0.7224045706273141
+    },
+    "client3": {
+      "delta": 7.092198581560284e-05,
+      "estimate": 0.5,
+      "lower": 0.2775954293726859,
+      "successes": 32,
+      "total": 64,
+      "upper": 0.7224045706273141
+    },
+    "client4": {
+      "delta": 7.092198581560284e-05,
+      "estimate": 0.5,
+      "lower": 0.2775954293726859,
+      "successes": 32,
+      "total": 64,
+      "upper": 0.7224045706273141
+    },
+    "client5": {
+      "delta": 7.092198581560284e-05,
+      "estimate": 0.5,
+      "lower": 0.2775954293726859,
+      "successes": 32,
+      "total": 64,
+      "upper": 0.7224045706273141
+    }
+  },
+  "configuration": {
+    "feedback_protocol": "abstract",
+    "legacy_opt_in": false,
+    "lucb_batch_size": 64,
+    "lucb_budget_fraction": 0.25,
+    "lucb_delta": 0.05,
+    "lucb_epsilon": 1.0,
+    "lucb_prioritization": "strict",
+    "lucb_top_k": null,
+    "max_feedback_per_client": 1000,
+    "priority_decay": 0.5,
+    "seed": 42,
+    "selection_mode": "lucb",
+    "shap_threshold": 0.05,
+    "test_force_feedback": true,
+    "top_k_features": 10,
+    "weak_class_accuracy": 1.0
+  },
+  "coverage": {
+    "client1": {
+      "batch_count": 47,
+      "batches": [
+        {
+          "batch_index": 0,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 1,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 2,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 3,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 4,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 5,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 6,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 7,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 8,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 9,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 10,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 11,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 12,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 13,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 14,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 15,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 16,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 17,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 18,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 19,
+          "label_counts": {
+            "int:0": 61,
+            "int:1": 3
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 20,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 21,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 22,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 23,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 24,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 25,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 26,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 27,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 28,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 29,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 30,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 31,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 32,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 33,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 34,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 35,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 36,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 37,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 38,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 39,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 40,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 41,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 42,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 43,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 44,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 45,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 46,
+          "label_counts": {
+            "int:0": 56
+          },
+          "sample_count": 56
+        }
+      ],
+      "class_counts": {
+        "int:0": 2389,
+        "int:1": 611
+      },
+      "scored_batch_indices": [
+        0
+      ],
+      "scored_sample_count": 64,
+      "total_samples": 3000,
+      "unique_sample_count": 3000
+    },
+    "client2": {
+      "batch_count": 47,
+      "batches": [
+        {
+          "batch_index": 0,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 1,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 2,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 3,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 4,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 5,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 6,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 7,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 8,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 9,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 10,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 11,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 12,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 13,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 14,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 15,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 16,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 17,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 18,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 19,
+          "label_counts": {
+            "int:0": 61,
+            "int:1": 3
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 20,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 21,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 22,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 23,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 24,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 25,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 26,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 27,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 28,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 29,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 30,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 31,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 32,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 33,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 34,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 35,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 36,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 37,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 38,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 39,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 40,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 41,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 42,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 43,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 44,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 45,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 46,
+          "label_counts": {
+            "int:0": 56
+          },
+          "sample_count": 56
+        }
+      ],
+      "class_counts": {
+        "int:0": 2389,
+        "int:1": 611
+      },
+      "scored_batch_indices": [
+        0
+      ],
+      "scored_sample_count": 64,
+      "total_samples": 3000,
+      "unique_sample_count": 3000
+    },
+    "client3": {
+      "batch_count": 47,
+      "batches": [
+        {
+          "batch_index": 0,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 1,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 2,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 3,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 4,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 5,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 6,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 7,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 8,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 9,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 10,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 11,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 12,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 13,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 14,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 15,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 16,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 17,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 18,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 19,
+          "label_counts": {
+            "int:0": 61,
+            "int:1": 3
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 20,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 21,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 22,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 23,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 24,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 25,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 26,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 27,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 28,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 29,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 30,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 31,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 32,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 33,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 34,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 35,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 36,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 37,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 38,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 39,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 40,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 41,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 42,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 43,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 44,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 45,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 46,
+          "label_counts": {
+            "int:0": 56
+          },
+          "sample_count": 56
+        }
+      ],
+      "class_counts": {
+        "int:0": 2389,
+        "int:1": 611
+      },
+      "scored_batch_indices": [
+        0
+      ],
+      "scored_sample_count": 64,
+      "total_samples": 3000,
+      "unique_sample_count": 3000
+    },
+    "client4": {
+      "batch_count": 47,
+      "batches": [
+        {
+          "batch_index": 0,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 1,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 2,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 3,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 4,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 5,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 6,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 7,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 8,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 9,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 10,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 11,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 12,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 13,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 14,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 15,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 16,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 17,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 18,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 19,
+          "label_counts": {
+            "int:0": 61,
+            "int:1": 3
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 20,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 21,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 22,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 23,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 24,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 25,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 26,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 27,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 28,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 29,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 30,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 31,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 32,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 33,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 34,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 35,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 36,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 37,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 38,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 39,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 40,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 41,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 42,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 43,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 44,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 45,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 46,
+          "label_counts": {
+            "int:0": 56
+          },
+          "sample_count": 56
+        }
+      ],
+      "class_counts": {
+        "int:0": 2389,
+        "int:1": 611
+      },
+      "scored_batch_indices": [
+        0
+      ],
+      "scored_sample_count": 64,
+      "total_samples": 3000,
+      "unique_sample_count": 3000
+    },
+    "client5": {
+      "batch_count": 47,
+      "batches": [
+        {
+          "batch_index": 0,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 1,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 2,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 3,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 4,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 5,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 6,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 7,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 8,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 9,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 10,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 11,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 12,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 13,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 14,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 15,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 16,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 17,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 18,
+          "label_counts": {
+            "int:0": 32,
+            "int:1": 32
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 19,
+          "label_counts": {
+            "int:0": 61,
+            "int:1": 3
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 20,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 21,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 22,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 23,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 24,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 25,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 26,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 27,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 28,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 29,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 30,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 31,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 32,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 33,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 34,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 35,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 36,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 37,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 38,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 39,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 40,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 41,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 42,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 43,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 44,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 45,
+          "label_counts": {
+            "int:0": 64
+          },
+          "sample_count": 64
+        },
+        {
+          "batch_index": 46,
+          "label_counts": {
+            "int:0": 56
+          },
+          "sample_count": 56
+        }
+      ],
+      "class_counts": {
+        "int:0": 2389,
+        "int:1": 611
+      },
+      "scored_batch_indices": [
+        0
+      ],
+      "scored_sample_count": 64,
+      "total_samples": 3000,
+      "unique_sample_count": 3000
+    }
+  },
+  "event_id": "tabular-round-1",
+  "event_type": "lucb_selection",
+  "explanation_cost": {
+    "explained_clients": 3,
+    "seconds": 0.282122
+  },
+  "metadata": {
+    "domain": "tabular",
+    "feedback_client_ids": [
+      "client1",
+      "client2",
+      "client3"
+    ],
+    "feedback_protocol": "abstract"
+  },
+  "model_fingerprint": "31c8675ea2e086ba271394b37db58fe69100f0d375dac5a970e1a45473b3cd44",
+  "model_sample_evaluations": 320,
+  "protocol": "abstract",
+  "schema_version": 1,
+  "scored_batches": {
+    "client1": [
+      {
+        "batch_index": 0,
+        "client_id": "client1",
+        "sample_count": 64,
+        "sample_ids": [
+          2820,
+          216,
+          2690,
+          886,
+          229,
+          2951,
+          666,
+          1631,
+          960,
+          2961,
+          612,
+          2024,
+          413,
+          419,
+          121,
+          1526,
+          2198,
+          1094,
+          171,
+          2261,
+          1063,
+          2384,
+          1051,
+          2980,
+          114,
+          859,
+          1059,
+          401,
+          2327,
+          1869,
+          672,
+          2697,
+          925,
+          1508,
+          502,
+          25,
+          1429,
+          2787,
+          914,
+          537,
+          1757,
+          522,
+          189,
+          2922,
+          2867,
+          1225,
+          2499,
+          2128,
+          2706,
+          1696,
+          744,
+          950,
+          2337,
+          2879,
+          2751,
+          1083,
+          1619,
+          1175,
+          830,
+          1506,
+          344,
+          1875,
+          396,
+          2663
+        ]
+      }
+    ],
+    "client2": [
+      {
+        "batch_index": 0,
+        "client_id": "client2",
+        "sample_count": 64,
+        "sample_ids": [
+          695,
+          1327,
+          1207,
+          681,
+          2891,
+          1456,
+          2244,
+          145,
+          1043,
+          173,
+          99,
+          1032,
+          2077,
+          2734,
+          724,
+          1562,
+          945,
+          1267,
+          2159,
+          2419,
+          1708,
+          1584,
+          2646,
+          783,
+          1097,
+          2565,
+          1599,
+          1525,
+          1809,
+          1483,
+          1828,
+          1772,
+          1614,
+          2444,
+          2190,
+          704,
+          714,
+          535,
+          153,
+          1173,
+          224,
+          462,
+          2418,
+          998,
+          2741,
+          1023,
+          525,
+          2905,
+          2934,
+          898,
+          936,
+          2797,
+          807,
+          2189,
+          373,
+          56,
+          718,
+          519,
+          1819,
+          2876,
+          2763,
+          2025,
+          434,
+          67
+        ]
+      }
+    ],
+    "client3": [
+      {
+        "batch_index": 0,
+        "client_id": "client3",
+        "sample_count": 64,
+        "sample_ids": [
+          391,
+          1332,
+          498,
+          84,
+          751,
+          894,
+          1707,
+          2934,
+          864,
+          26,
+          1918,
+          567,
+          2387,
+          2241,
+          2843,
+          1723,
+          1562,
+          965,
+          974,
+          1545,
+          443,
+          1966,
+          2062,
+          2921,
+          2266,
+          1810,
+          378,
+          326,
+          2913,
+          280,
+          1522,
+          191,
+          608,
+          593,
+          1871,
+          1836,
+          1660,
+          209,
+          1925,
+          1040,
+          452,
+          707,
+          2247,
+          1254,
+          2502,
+          2931,
+          2220,
+          279,
+          910,
+          53,
+          2381,
+          2093,
+          1636,
+          796,
+          2351,
+          330,
+          1990,
+          1916,
+          245,
+          1318,
+          465,
+          320,
+          2125,
+          1858
+        ]
+      }
+    ],
+    "client4": [
+      {
+        "batch_index": 0,
+        "client_id": "client4",
+        "sample_count": 64,
+        "sample_ids": [
+          714,
+          747,
+          1228,
+          490,
+          134,
+          1183,
+          2940,
+          2636,
+          209,
+          2710,
+          1341,
+          1562,
+          851,
+          2783,
+          2809,
+          2796,
+          1840,
+          789,
+          2467,
+          1570,
+          2197,
+          1767,
+          2258,
+          212,
+          2644,
+          1469,
+          1045,
+          1914,
+          2460,
+          2674,
+          594,
+          1835,
+          154,
+          42,
+          144,
+          1676,
+          1250,
+          2403,
+          549,
+          1158,
+          649,
+          1012,
+          2480,
+          1468,
+          306,
+          230,
+          1007,
+          2626,
+          1881,
+          1898,
+          1087,
+          2202,
+          824,
+          1134,
+          2724,
+          1991,
+          262,
+          2575,
+          2249,
+          1594,
+          153,
+          2633,
+          299,
+          2072
+        ]
+      }
+    ],
+    "client5": [
+      {
+        "batch_index": 0,
+        "client_id": "client5",
+        "sample_count": 64,
+        "sample_ids": [
+          2389,
+          1318,
+          2132,
+          280,
+          70,
+          591,
+          752,
+          770,
+          2400,
+          1282,
+          2751,
+          1209,
+          1527,
+          306,
+          608,
+          806,
+          574,
+          522,
+          1492,
+          581,
+          228,
+          2594,
+          1932,
+          2099,
+          2690,
+          129,
+          482,
+          1127,
+          830,
+          1809,
+          697,
+          2271,
+          708,
+          1538,
+          0,
+          2625,
+          120,
+          844,
+          1993,
+          931,
+          922,
+          1141,
+          874,
+          2869,
+          805,
+          1828,
+          1944,
+          128,
+          1142,
+          2712,
+          2298,
+          1452,
+          1658,
+          1197,
+          2559,
+          336,
+          317,
+          2910,
+          2332,
+          683,
+          205,
+          1603,
+          2433,
+          2417
+        ]
+      }
+    ]
+  },
+  "selected_classes": {
+    "client1": [
+      {
+        "accuracy": 0.0,
+        "correct": 0,
+        "label": 1,
+        "lower": 0.0,
+        "status": "weak",
+        "total": 32,
+        "upper": 0.3303490718157497
+      }
+    ],
+    "client2": [
+      {
+        "accuracy": 0.0,
+        "correct": 0,
+        "label": 1,
+        "lower": 0.0,
+        "status": "weak",
+        "total": 32,
+        "upper": 0.3303490718157497
+      }
+    ],
+    "client3": [
+      {
+        "accuracy": 0.0,
+        "correct": 0,
+        "label": 1,
+        "lower": 0.0,
+        "status": "weak",
+        "total": 32,
+        "upper": 0.3303490718157497
+      }
+    ]
+  },
+  "selected_clients": [
+    "client1",
+    "client2",
+    "client3"
+  ],
+  "status": "ok",
+  "stop_reason": "epsilon_reached"
+}
