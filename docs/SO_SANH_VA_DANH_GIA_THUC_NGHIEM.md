@@ -112,6 +112,33 @@ python tabular/server_tabular.py \
 
 ---
 
+### 3.3. Tự Động Hóa Tổng Hợp Kết Quả & Xuất Bảng Khoa Học (`tools/aggregate_benchmark.py`)
+
+Hệ thống đã tích hợp công cụ benchmark tự động hóa đa năng `tools/aggregate_benchmark.py` giúp phân rã và tổng hợp chi tiết toàn bộ các giai đoạn tính toán:
+1. **Server Evaluation Time (`eval_time_sec`):** Thời gian server chạy thuật toán LUCB hoặc Full-Scan chấm điểm client.
+2. **Server XAI Time (`feedback_time_sec`):** Thời gian chạy SHAP tạo vector giải thích tính năng.
+3. **Client Restore Time (`restore_time_sec`):** Thời gian client chạy TVAE khôi phục missing features (bằng $0.0s$ đối với Abstract Protocol).
+4. **Client Generation Time (`gen_time_sec`):** Thời gian client chạy TVAE sinh mẫu synthetic nội bộ.
+5. **Client Local Train Time (`train_time_sec`):** Thời gian client huấn luyện mô hình cục bộ trên tập dữ liệu đã mở rộng.
+6. **Số lượng mẫu test server đã chấm (`samples_tested`):** Thể hiện trực tiếp tỷ lệ cắt giảm ngân sách ($1 - M/E$).
+
+#### Lệnh chạy tổng hợp đối chiếu đa phương pháp:
+
+```bash
+python tools/aggregate_benchmark.py \
+    --exp-dirs logs/exp_benchmark_fullscan logs/exp_benchmark_minibatch logs/exp_benchmark_lucb \
+    --names "Baseline_FullScan" "Minibatch_Threshold" "Proposed_LUCB" \
+    --output-markdown docs/BENCHMARK_REPORT.md \
+    --output-latex docs/table_benchmark.tex
+```
+
+Lệnh trên sẽ tự động:
+- Hiển thị bảng ASCII trực quan trên Terminal.
+- Xuất file báo cáo Markdown chuẩn GitHub (`docs/BENCHMARK_REPORT.md`) kèm phân tích đa chiều.
+- Xuất đoạn mã bảng LaTeX chuẩn IEEE/ACM (`docs/table_benchmark.tex`) với định dạng `booktabs` (`\toprule`, `\midrule`, `\bottomrule`) để copy trực tiếp vào bản thảo bài báo hội nghị/tạp chí.
+
+---
+
 ## 4. KẾT LUẬN
 
 Việc chuẩn hóa mã nguồn trên cả 2 branch `tan` và `minibatch` tạo ra một nền tảng khoa học vững chắc:

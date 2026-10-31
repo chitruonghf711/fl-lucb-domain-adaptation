@@ -109,11 +109,57 @@ class TabularLUCBIntegrationTests(unittest.TestCase):
             _, summary = strategy._run_lucb_feedback(models)
 
             self.assertLessEqual(summary["model_sample_evaluations"], summary["budget"])
+            self.assertIn("eval_time_sec", summary)
+            self.assertIn("samples_saved_pct", summary)
+            self.assertIn("samples_tested", summary)
             self.assertTrue(strategy.feedback_storage)
             self.assertTrue(all("reference" not in bundle for bundle in strategy.feedback_storage.values()))
             audit = (Path(server.CONFIG["server_audit_dir"]) / "feedback_round_0.json").read_text(encoding="utf-8")
             self.assertNotIn('"reference"', audit)
             self.assertNotIn('"raw"', audit)
+
+    def test_client_time_summary_tracking(self) -> None:
+        import pandas as pd
+        from tabular.client_tabular import FLClient, SimpleNN
+
+        with tempfile.TemporaryDirectory(prefix="client_timing_") as tmp_dir:
+            model = SimpleNN(2)
+            train_df = pd.DataFrame({
+                "f1": [0.1, 0.2, 0.3],
+                "f2": [0.4, 0.5, 0.6],
+                "Exited": [0, 1, 0]
+            })
+            client = FLClient(
+                client_id="client_test",
+                model=model,
+                train_df=train_df,
+                restore_synthesizer=None,
+                generator=None,
+                client_log_dir=tmp_dir
+            )
+            # Run in smoke_no_generation mode
+            import tabular.client_tabular as ctab
+            orig_smoke = ctab.CONFIG["smoke_no_generation"]
+            ctab.CONFIG["smoke_no_generation"] = True
+            try:
+                client.fit(client.get_parameters({}), {"server_round": 1})
+            finally:
+                ctab.CONFIG["smoke_no_generation"] = orig_smoke
+
+            self.assertEqual(len(client.time_logs), 1)
+            entry = client.time_logs[0]
+            self.assertEqual(entry["round"], 1)
+            self.assertIn("total_fit_time_sec", entry)
+            self.assertIn("train_time_sec", entry)
+            self.assertIn("gen_time_sec", entry)
+            self.assertIn("restore_time_sec", entry)
+            self.assertEqual(entry["train_samples"], 3)
+
+            csv_file = os.path.join(tmp_dir, "client_time_summary.csv")
+            self.assertTrue(os.path.exists(csv_file))
+            df = pd.read_csv(csv_file)
+            self.assertEqual(len(df), 1)
+            self.assertEqual(df["round"].iloc[0], 1)
 
     def test_duplicate_stable_id_guard_clears_pending_feedback(self) -> None:
         server = load_server_module()

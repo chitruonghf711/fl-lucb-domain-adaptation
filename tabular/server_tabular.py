@@ -629,12 +629,14 @@ class FeedbackFedAvg(fl.server.strategy.FedAvg):
         fingerprint = model_collection_fingerprint(client_models)
         if CONFIG["lucb_prioritization"] == "strict" and self._last_lucb_fingerprint not in {None, fingerprint}:
             self.lucb_state = SelectionState()
+        eval_start = time.time()
         result = LUCBSelector(selection_config_from_runtime(CONFIG)).select(
             self._make_plans(client_models),
             lambda client_id, batch: self._score_planned_batch(client_models, client_id, batch),
             model_fingerprint=fingerprint,
             state=self.lucb_state,
         )
+        eval_seconds = time.time() - eval_start
         self._last_lucb_fingerprint = fingerprint
         feedback_seconds = 0.0
         feedback_clients: List[str] = []
@@ -672,9 +674,14 @@ class FeedbackFedAvg(fl.server.strategy.FedAvg):
             },
         )
         self._write_audit(audit)
+        total_capacity = len(client_models) * len(self.test_targets)
+        samples_tested = result.model_sample_evaluations
+        savings_pct = round(100.0 * max(0, total_capacity - samples_tested) / max(1, total_capacity), 2)
         return feedback_seconds, {
             "selection_mode": "lucb", "status": result.status, "stop_reason": result.stop_reason,
-            "model_sample_evaluations": result.model_sample_evaluations, "budget": result.budget,
+            "eval_time_sec": round(eval_seconds, 4),
+            "model_sample_evaluations": samples_tested, "samples_tested": samples_tested,
+            "samples_saved_pct": savings_pct, "budget": result.budget,
             "boundary_gap": result.boundary_gap, "selected_client_ids": list(result.selected_client_ids),
             "feedback_client_ids": feedback_clients,
         }
@@ -683,9 +690,12 @@ class FeedbackFedAvg(fl.server.strategy.FedAvg):
         """Run the original full scan only when selection_mode explicitly requests it."""
 
         elapsed = 0.0
+        eval_seconds = 0.0
         feedback_clients = []
         for client_id, model in client_models.items():
+            t_eval = time.time()
             errors = self._full_scan_errors(model)
+            eval_seconds += (time.time() - t_eval)
             if errors:
                 elapsed += self._store_feedback(client_id, model, errors)
                 feedback_clients.append(client_id)
@@ -724,7 +734,9 @@ class FeedbackFedAvg(fl.server.strategy.FedAvg):
         self._write_audit(audit)
         return elapsed, {
             "selection_mode": "legacy_full_scan", "status": "ok", "stop_reason": "explicit_legacy_full_scan",
-            "model_sample_evaluations": scanned, "budget": scanned, "boundary_gap": None,
+            "eval_time_sec": round(eval_seconds, 4),
+            "model_sample_evaluations": scanned, "samples_tested": scanned, "samples_saved_pct": 0.0,
+            "budget": scanned, "boundary_gap": None,
             "selected_client_ids": sorted(client_models), "feedback_client_ids": feedback_clients,
         }
 
@@ -796,7 +808,11 @@ class FeedbackFedAvg(fl.server.strategy.FedAvg):
         set_parameters(self.model, weights)
         self.time_log.append({
             "round": server_round, "round_time_sec": round(time.time() - self.round_start, 2),
-            "aggregate_time_sec": round(aggregation_seconds, 2), "feedback_time_sec": round(feedback_seconds, 2),
+            "aggregate_time_sec": round(aggregation_seconds, 2),
+            "eval_time_sec": self._last_selection_summary.get("eval_time_sec", 0.0),
+            "feedback_time_sec": round(feedback_seconds, 2),
+            "samples_tested": self._last_selection_summary.get("samples_tested", 0),
+            "samples_saved_pct": self._last_selection_summary.get("samples_saved_pct", 0.0),
             "feedback_triggered": triggered, **self._last_selection_summary,
         })
         return fl.common.ndarrays_to_parameters(weights), {}

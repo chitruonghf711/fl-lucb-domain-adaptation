@@ -18,6 +18,7 @@ import logging
 import os
 import pickle
 import sys
+import time
 import warnings
 from datetime import datetime
 from pathlib import Path
@@ -27,8 +28,14 @@ import flwr as fl
 import pandas as pd
 import torch
 import torch.nn as nn
-from sdv.metadata import SingleTableMetadata
-from sdv.single_table import TVAESynthesizer
+try:
+    from sdv.metadata import SingleTableMetadata
+    from sdv.single_table import TVAESynthesizer
+    HAS_SDV = True
+except ImportError:
+    HAS_SDV = False
+    SingleTableMetadata = Any  # type: ignore[assignment, misc]
+    TVAESynthesizer = Any  # type: ignore[assignment, misc]
 from sklearn.metrics.pairwise import cosine_similarity
 from torch.utils.data import DataLoader, TensorDataset
 
@@ -358,7 +365,8 @@ def train_local_model(model: nn.Module, train_df: pd.DataFrame) -> int:
 # === FLOWER CLIENT DEFINITION ===
 class FLClient(fl.client.NumPyClient):
     def __init__(self, client_id: str, model: nn.Module, train_df: pd.DataFrame,
-                 restore_synthesizer: Optional[TVAESynthesizer], generator: Optional[TVAESynthesizer]):
+                 restore_synthesizer: Optional[TVAESynthesizer], generator: Optional[TVAESynthesizer],
+                 client_log_dir: Optional[str] = None):
         self.client_id = client_id
         self.model = model
         self.train_df = train_df
@@ -367,6 +375,9 @@ class FLClient(fl.client.NumPyClient):
         # Rebuilt from train_df at every fit() call, so restored/synthetic rows never
         # accumulate across rounds; it is kept as state only to report the last size.
         self.train_data = train_df.copy()
+        self.client_log_dir = client_log_dir or CONFIG.get("client_log_dir", f"logs/clients/{client_id}")
+        self.time_logs: List[Dict[str, Any]] = []
+        self.round_counter = 0
 
     def get_parameters(self, config: Dict[str, Any]) -> List[Any]:
         return [val.cpu().numpy() for val in self.model.state_dict().values()]
@@ -377,7 +388,22 @@ class FLClient(fl.client.NumPyClient):
             state_dict[key] = torch.tensor(value)
         self.model.load_state_dict(state_dict)
 
+    def save_time_summary(self) -> None:
+        """Persist per-round client execution timing to CSV."""
+        if not self.time_logs:
+            return
+        os.makedirs(self.client_log_dir, exist_ok=True)
+        csv_path = os.path.join(self.client_log_dir, "client_time_summary.csv")
+        pd.DataFrame(self.time_logs).to_csv(csv_path, index=False)
+
     def fit(self, parameters: List[Any], config: Dict[str, Any]) -> Tuple[List[Any], int, Dict[str, Any]]:
+        t_fit_start = time.time()
+        self.round_counter += 1
+        current_round = config.get("server_round", self.round_counter)
+        restore_time = 0.0
+        gen_time = 0.0
+        gen_samples_count = 0
+
         self.set_parameters(parameters)
 
         protocol = str(config.get("feedback_protocol", CONFIG["feedback_protocol"]))
@@ -412,9 +438,12 @@ class FLClient(fl.client.NumPyClient):
             if protocol == "abstract":
                 items = normalized_abstract_items(raw_feedback)
                 logging.info("Using abstract feedback for %d weak class summaries", len(items))
+                t_gen = time.time()
                 selected_samples = collect_abstract_synthetic_samples(
                     self.generator, self.train_df, items, len(self.train_df)
                 )
+                gen_time = time.time() - t_gen
+                gen_samples_count = len(selected_samples)
                 self.train_data = pd.concat([self.train_df, selected_samples], ignore_index=True)
                 print(f"[CLIENT] Abstract feedback selected {len(selected_samples)} local synthetic samples")
             else:
@@ -429,10 +458,15 @@ class FLClient(fl.client.NumPyClient):
                 shap_feedback = legacy_payload.get("shap_feedback", [])
                 logging.warning("Using explicit legacy raw-value feedback for %d samples", len(shap_feedback))
                 fb_df = feedback_to_dataframe(shap_feedback, CONFIG["target_column"])
+                t_res = time.time()
                 restored_df = restore_missing_values(fb_df, self.restore_synthesizer)
+                restore_time = time.time() - t_res
                 logging.info("NaN before restore: %d | after restore: %d",
                              fb_df.isna().sum().sum(), restored_df.isna().sum().sum())
+                t_gen = time.time()
                 selected_samples = collect_synthetic_samples(self.generator, restored_df, len(self.train_df))
+                gen_time = time.time() - t_gen
+                gen_samples_count = len(selected_samples)
                 self.train_data = pd.concat([self.train_df, restored_df, selected_samples], ignore_index=True)
                 print(f"[CLIENT] Legacy feedback selected {len(selected_samples)} synthetic samples")
         else:
@@ -441,12 +475,35 @@ class FLClient(fl.client.NumPyClient):
                 raise RuntimeError("TVAE generator is required outside --smoke-no-generation mode")
 
             num_gen = int(CONFIG["gen_multiplier_fixed"] * len(self.train_df))
+            t_gen = time.time()
             gen_fixed = self.generator.sample(num_gen)
+            gen_time = time.time() - t_gen
+            gen_samples_count = len(gen_fixed)
             logging.info("Generated %d fixed synthetic samples", num_gen)
             self.train_data = pd.concat([self.train_df, gen_fixed], ignore_index=True)
 
         logging.info(f"Final train size: Original={len(self.train_df)} | Restored={len(restored_df)} "
                      f"| Synthetic={len(selected_samples)} | Total={len(self.train_data)}")
+
+        t_train = time.time()
+        num_examples = train_local_model(self.model, self.train_data)
+        train_time = time.time() - t_train
+        total_fit_time = time.time() - t_fit_start
+
+        # Record client round execution metrics
+        self.time_logs.append({
+            "round": current_round,
+            "total_fit_time_sec": round(total_fit_time, 2),
+            "restore_time_sec": round(restore_time, 2),
+            "gen_time_sec": round(gen_time, 2),
+            "train_time_sec": round(train_time, 2),
+            "train_samples": num_examples,
+            "gen_samples": gen_samples_count,
+        })
+        self.save_time_summary()
+
+        logging.info("=== ROUND COMPLETED ===\n")
+        return self.get_parameters(config), num_examples, {"client_id": self.client_id}
 
         num_examples = train_local_model(self.model, self.train_data)
         logging.info("=== ROUND COMPLETED ===\n")
@@ -495,7 +552,10 @@ def main() -> None:
         generator = load_generator(CONFIG["gen_model_path"])
 
     model = SimpleNN(train_df.drop(columns=[CONFIG["target_column"]]).shape[1])
-    client = FLClient(CONFIG["client_id"], model, train_df, restore_synthesizer, generator)
+    client = FLClient(
+        CONFIG["client_id"], model, train_df, restore_synthesizer, generator,
+        client_log_dir=CONFIG["client_log_dir"]
+    )
 
     print(f"[CLIENT] Connecting to {CONFIG['server_address']}...")
     fl.client.start_numpy_client(server_address=CONFIG["server_address"], client=client)
