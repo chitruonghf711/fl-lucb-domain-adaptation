@@ -295,6 +295,40 @@ Nhờ việc lồng ghép LUCB và Chẩn đoán Phân cấp Class Yếu, Server
 
 ---
 
+### 2.5. PHÂN TÍCH SÂU CÁC CƠ CHẾ TINH TẾ CỦA FL-LUCB (GIẢI MÃ CÁC CÂU HỎI THIẾT KẾ CỐT LÕI)
+
+Trong quá trình bảo vệ đề xuất hoặc phản biện khoa học, có 4 câu hỏi thiết kế then chốt thường được đặt ra. Thuật toán FL-LUCB đã giải quyết trọn vẹn cả 4 câu hỏi này:
+
+#### 1. Khối lượng mẫu lỗi tự động quyết định số lượng $x$ mà không cần xếp hạng (ranking) thủ công:
+* **Vấn đề:** Khi chọn ra $k$ client yếu trong tập $S$, làm thế nào để phân bổ ngân sách chạy XAI ($c_x \cdot x$) cho client tệ nhất nhiều hơn client ít tệ hơn?
+* **Cơ chế tự nhiên của LUCB:** Hệ thống **không cần thêm thuật toán ranking**. Vì đầu vào của hàm XAI là *các mẫu đoán sai của các lớp yếu*, nên:
+  - Client $A$ (rất yếu): Đoán sai $100$ mẫu trong các batch đã test $\implies$ nhận $100$ lượt tính giải thích.
+  - Client $B$ (đỡ yếu hơn): Chỉ đoán sai $20$ mẫu $\implies$ chỉ nhận $20$ lượt tính giải thích.
+  - Ngân sách giải thích $x$ **tự động phân bổ gấp 5 lần cho Client $A$**, tỷ lệ thuận hoàn hảo với mức độ "tệ" của mô hình mà không cần can thiệp nhân tạo.
+
+#### 2. Nhận diện lỗi Just-In-Time và Zero Re-inference:
+* **Vấn đề:** Sau khi LUCB kết thúc, server có phải quét lại dữ liệu để xem client sai ở đâu không?
+* **Cơ chế lưu vết:** **Hoàn toàn KHÔNG**. Trong quá trình kéo Arm trên từng minibatch, server đã đối chiếu nhãn và ghi nhận ngay vào bộ nhớ đệm `_selection_observations` (hoặc `observed`):
+  $$\text{observations}[client\_id][sample\_id] = \{\text{label}, \text{prediction}, \text{confidence}, \text{correct}\}$$
+  Khi LUCB chốt tập $S$, server chỉ việc bốc trực tiếp các mẫu đã được đánh dấu là `correct == False` thuộc các lớp `weak` ra dùng ngay. Không tốn thêm bất kỳ 1 phép forward-pass nào.
+
+#### 3. LUCB đóng vai trò Bộ Lọc 3 Lớp (Gatekeeper) giải cứu chi phí $c_x \cdot x$:
+* **Vấn đề:** Chi phí tính XAI (SHAP / Grad-CAM) rất lớn. LUCB tác động vào chi phí này như thế nào?
+* **Cơ chế Gatekeeper:** LUCB làm bộ lọc khắt khe ở cửa trước:
+  - **Lớp 1 (Lọc Client):** Chỉ cho phép đúng $k$ client yếu nhất bước vào vòng tính XAI.
+  - **Lớp 2 (Lọc Class):** Chỉ giải thích các class có cận trên khoảng tin cậy Wilson $U_{i,c} < \tau = 0.85$.
+  - **Lớp 3 (Lọc Sample):** Chỉ lấy các mẫu thực sự đoán sai trong các class yếu đó.
+  $\rightarrow$ Chặn đứng $90\%$ dữ liệu không cần thiết, giúp cỗ máy XAI chỉ phải phân tích vài chục mẫu đại diện thay vì hàng nghìn mẫu đại trà.
+
+#### 4. Dung lượng minibatch hữu hạn và tính đại diện thống kê:
+* **Vấn đề:** Mẫu sai sau LUCB chỉ nằm trong các minibatch đã test, không phải toàn bộ $V$, liệu có đủ tốt?
+* **Cơ chế bảo chứng:**
+  - Minibatch được tạo theo cơ chế **phân tầng (Class-Stratified)**, đóng vai trò như mẫu thử máu đại diện hoàn hảo cho phân phối của toàn bộ tập $V$.
+  - Bài báo gốc quét hàng chục nghìn mẫu nhưng cuối cùng cũng chỉ lọc lấy `top_m` câu sai tự tin nhất.
+  - LUCB lấy các câu sai từ minibatch, sắp xếp theo độ tự tin giảm dần và cắm thẳng vào bộ lọc `top_m` của bài báo gốc. Lượng mẫu này là quá đủ để client nhận diện được độ lệch miền (domain shift).
+
+---
+
 # PHẦN 3: TỔNG KẾT BẢNG THAM SỐ ĐIỀU KHIỂN GIỮA HAI BRANCH
 
 | Tham số / Cơ chế | Branch `minibatch` | Branch `tan` (LUCB) |
