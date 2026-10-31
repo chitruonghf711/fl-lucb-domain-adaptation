@@ -200,12 +200,94 @@ def parse_config(exp_dir: str) -> Dict[str, Any]:
         return {}
 
 
+def parse_selection_insights(exp_dir: str) -> Dict[str, Any]:
+    """Parse selection dynamics from minibatch_evaluation_log.csv or audits/*.json."""
+    # 1. Try minibatch_evaluation_log.csv (Minibatch Branch)
+    mb_path = find_file(exp_dir, [
+        "server/minibatch_evaluation_log.csv",
+        "minibatch_evaluation_log.csv",
+        "*/minibatch_evaluation_log.csv"
+    ])
+    if mb_path and os.path.exists(mb_path):
+        try:
+            df = pd.read_csv(mb_path)
+            if not df.empty and "status" in df.columns:
+                total_ev = len(df)
+                good_ev = int((df["status"] == "GOOD").sum())
+                needs_fb = int((df["status"] == "NEEDS_FEEDBACK").sum())
+                exhausted = int((df["status"] == "BUDGET_EXHAUSTED").sum())
+                avg_b_good = float(df[df["status"] == "GOOD"]["batches_tested"].mean()) if good_ev > 0 else 0.0
+                weak_clients = df[df["status"] == "NEEDS_FEEDBACK"]["client_id"].value_counts().to_dict()
+                return {
+                    "mechanism": "Minibatch Threshold Early-Stop",
+                    "total_eval_events": total_ev,
+                    "early_stop_rate_pct": round(100.0 * good_ev / max(1, total_ev), 2),
+                    "early_stop_count": good_ev,
+                    "needs_feedback_count": needs_fb,
+                    "budget_exhausted_count": exhausted,
+                    "avg_batches_for_good": round(avg_b_good, 2),
+                    "weak_clients_selected": weak_clients,
+                }
+        except Exception:
+            pass
+
+    # 2. Try audits/*.json (LUCB Branch)
+    audit_files = glob.glob(os.path.join(exp_dir, "server/audits/*.json"))
+    if not audit_files:
+        audit_files = glob.glob(os.path.join(exp_dir, "audits/*.json"))
+        if not audit_files:
+            audit_files = glob.glob(os.path.join(exp_dir, "*/audits/*.json"))
+
+    if audit_files:
+        try:
+            selected_clients_counter: Dict[str, int] = {}
+            weak_classes_counter: Dict[str, int] = {}
+            gaps: List[float] = []
+            stop_reasons: Dict[str, int] = {}
+
+            for af in audit_files:
+                with open(af, "r") as f:
+                    data = json.load(f)
+                reason = data.get("stop_reason", "unknown")
+                stop_reasons[reason] = stop_reasons.get(reason, 0) + 1
+                bg = data.get("boundary_gap")
+                if bg is not None and isinstance(bg, (int, float)):
+                    gaps.append(float(bg))
+                for cid in data.get("selected_client_ids", []):
+                    selected_clients_counter[cid] = selected_clients_counter.get(cid, 0) + 1
+                sel_classes = data.get("selected_classes", {})
+                if isinstance(sel_classes, dict):
+                    for cid, classes in sel_classes.items():
+                        if isinstance(classes, list):
+                            for item in classes:
+                                if isinstance(item, dict) and item.get("status") == "weak":
+                                    lbl = str(item.get("label"))
+                                    weak_classes_counter[lbl] = weak_classes_counter.get(lbl, 0) + 1
+
+            return {
+                "mechanism": "LUCB (Multi-Armed Bandit with Wilson CI)",
+                "audit_rounds_logged": len(audit_files),
+                "avg_boundary_gap": round(float(np.mean(gaps)), 4) if gaps else None,
+                "stop_reasons": stop_reasons,
+                "selected_clients": selected_clients_counter,
+                "weak_classes_diagnosed": weak_classes_counter,
+            }
+        except Exception:
+            pass
+
+    return {
+        "mechanism": "Full Scan / Heuristic",
+        "notes": "No minibatch log or LUCB audits found."
+    }
+
+
 def inspect_experiment(exp_dir: str, name: Optional[str] = None) -> Dict[str, Any]:
     """Collate all metrics for a single experiment run directory."""
     label = name or os.path.basename(os.path.normpath(exp_dir))
     s_metrics = parse_server_metrics(exp_dir)
     s_times = parse_server_times(exp_dir)
     c_metrics = parse_client_metrics(exp_dir)
+    insights = parse_selection_insights(exp_dir)
     cfg = parse_config(exp_dir)
 
     total_time = s_times.get("total_server_time_sec", 0.0) + c_metrics.get("avg_client_fit_time_sec", 0.0)
@@ -218,6 +300,7 @@ def inspect_experiment(exp_dir: str, name: Optional[str] = None) -> Dict[str, An
         **s_metrics,
         **s_times,
         **c_metrics,
+        "selection_insights": insights,
         "total_estimated_time_sec": total_time,
     }
 
@@ -288,7 +371,29 @@ def generate_markdown_report(experiments: List[Dict[str, Any]]) -> str:
         md.append(f"  - Client Local Training: `{exp.get('total_train_time_sec', 0.0):.2f}s` (Train trên {exp.get('total_train_samples', 0):,} mẫu)")
         md.append(f"  - Tổng số mẫu kiểm thử server đã chấm: **{exp.get('total_samples_tested', 0):,} mẫu**\n")
 
-    md.append("## 3. Nhận Xét & Kết Luận Khoa Học")
+    md.append("## 3. Phân Tích Động Học Lựa Chọn Client Yếu (Selection Dynamics & Diagnostics)\n")
+    for exp in experiments:
+        ins = exp.get("selection_insights", {})
+        mech = ins.get("mechanism", "N/A")
+        md.append(f"### Cơ chế chọn lọc: `{exp.get('name')}` ({mech})")
+        if "Minibatch" in mech:
+            md.append(f"- **Tổng số lượt đánh giá client:** {ins.get('total_eval_events', 0)}")
+            md.append(f"- **Tỷ lệ dừng sớm (Early Stop Rate):** **{ins.get('early_stop_rate_pct', 0.0):.1f}%** ({ins.get('early_stop_count', 0)} lần đạt trạng thái `GOOD`)")
+            md.append(f"- **Số batch trung bình để dừng sớm:** **{ins.get('avg_batches_for_good', 0.0):.2f} batches** (so với tối đa 10 batches)")
+            md.append(f"- **Số lần phát hiện client yếu (`NEEDS_FEEDBACK`):** {ins.get('needs_feedback_count', 0)} lần")
+            md.append(f"- **Số lần chạm trần ngân sách toàn cục (`BUDGET_EXHAUSTED`):** {ins.get('budget_exhausted_count', 0)} lần")
+            md.append(f"- **Phân phối client yếu được can thiệp:** `{ins.get('weak_clients_selected', {})}`\n")
+        elif "LUCB" in mech:
+            md.append(f"- **Số vòng kích hoạt LUCB:** {ins.get('audit_rounds_logged', 0)} vòng")
+            if ins.get("avg_boundary_gap") is not None:
+                md.append(f"- **Khoảng cách biên trung bình (Avg Boundary Gap $\\Delta_t$):** `{ins.get('avg_boundary_gap')}`")
+            md.append(f"- **Lý do dừng thuật toán:** `{ins.get('stop_reasons', {})}`")
+            md.append(f"- **Phân phối client yếu thuộc Top-k được chọn:** `{ins.get('selected_clients', {})}`")
+            md.append(f"- **Chẩn đoán phân cấp lớp yếu (Weak Classes via Wilson CI):** `{ins.get('weak_classes_diagnosed', {})}`\n")
+        else:
+            md.append(f"- *Thông tin:* {ins.get('notes', 'Full scan hoặc không có log chuyên biệt.')}\n")
+
+    md.append("## 4. Nhận Xét & Kết Luận Khoa Học")
     md.append("1. **Hiệu Quả Đánh Giá (LUCB vs Baseline Scan):** "
               "LUCB và cơ chế Minibatch dừng sớm giúp cắt giảm từ 70% đến 85% số lượng mẫu test cần chấm trên server, "
               "giúp thời gian đánh giá giảm mạnh từ hàng chục giây xuống dưới 0.1 giây mỗi vòng.")
