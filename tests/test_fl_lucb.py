@@ -204,6 +204,29 @@ class SelectorTests(unittest.TestCase):
         self.assertEqual(result.stop_reason, "budget_exhausted")
         self.assertFalse(result.feedback_ready)
 
+    def test_budget_exhaustion_allows_partial_feedback_when_configured(self):
+        plans = make_plans(client_count=3, sample_count=4, batch_size=2)
+        result = LUCBSelector(
+            SelectionConfig(
+                lucb_batch_size=2,
+                lucb_top_k=1,
+                lucb_budget_fraction=1.0,
+                allow_partial_feedback=True,
+                weak_class_accuracy=1.0,
+            )
+        ).select(
+            plans,
+            lambda _client_id, batch: BatchScore.from_correctness(
+                batch.labels, [False] * batch.size
+            ),
+            model_fingerprint="partial-budget-allowed",
+            budget=6,
+        )
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(result.stop_reason, "budget_exhausted")
+        self.assertTrue(result.feedback_ready)
+
     def test_exhausted_arms_are_explicit_and_safe(self):
         plans = make_plans(client_count=3, sample_count=2, batch_size=2)
         flags = {"client-0": False, "client-1": True, "client-2": False}

@@ -360,7 +360,7 @@ class FeedbackFedAvg(FedAvg):
                  lucb_delta: float = 0.05, weak_class_accuracy: float = 0.85,
                  lucb_prioritization: str = "strict", seed: int = 42,
                  feedback_protocol: str = "abstract", allow_raw_feedback: bool = False,
-                 force_feedback: bool = False, device=None, **kwargs):
+                 force_feedback: bool = False, allow_partial_feedback: bool = False, device=None, **kwargs):
         super().__init__(**kwargs)
         self.test_set     = test_set
         self.test_loader  = DataLoader(test_set, batch_size=batch_size, shuffle=False)
@@ -393,6 +393,7 @@ class FeedbackFedAvg(FedAvg):
             weak_class_accuracy=weak_class_accuracy,
             seed=seed,
             lucb_prioritization=lucb_prioritization,
+            allow_partial_feedback=allow_partial_feedback,
         )
         self.lucb_selector = LUCBSelector(self.lucb_config)
         self.lucb_state = SelectionState()
@@ -886,6 +887,8 @@ def parse_args(argv=None):
                    help="abstract feedback omits server-side pixels")
     p.add_argument("--allow-raw-feedback", action="store_true",
                    help="explicitly permit legacy payloads with raw target patches")
+    p.add_argument("--allow-partial-feedback", action="store_true",
+                   help="deliver feedback to identified weak classes even if budget was exhausted before full separation")
     p.add_argument("--force-feedback", action="store_true",
                    help="force feedback events for controlled smoke experiments")
     p.add_argument("--validate-config", action="store_true",
@@ -994,6 +997,7 @@ def main(argv=None):
         feedback_protocol=args.feedback_protocol,
         allow_raw_feedback=args.allow_raw_feedback,
         force_feedback=args.force_feedback,
+        allow_partial_feedback=args.allow_partial_feedback,
         on_fit_config_fn=fit_config,
         device=DEVICE,
         fit_metrics_aggregation_fn=weighted_average,

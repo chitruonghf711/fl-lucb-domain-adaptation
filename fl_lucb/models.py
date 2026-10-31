@@ -210,6 +210,7 @@ class SelectionConfig:
     seed: int = 42
     lucb_prioritization: str = "strict"
     priority_decay: float = 0.5
+    allow_partial_feedback: bool = False
 
     def validate(self) -> None:
         if self.selection_mode not in {"lucb", "legacy_full_scan"}:
@@ -230,6 +231,8 @@ class SelectionConfig:
             raise ValueError("lucb_prioritization must be 'strict' or 'decay_priority'")
         if not 0 <= self.priority_decay <= 1:
             raise ValueError("priority_decay must be in [0, 1]")
+        if not isinstance(self.allow_partial_feedback, bool):
+            raise ValueError("allow_partial_feedback must be a boolean")
 
     def resolved_top_k(self, client_count: int) -> int:
         if client_count <= 0:
@@ -249,6 +252,7 @@ class SelectionConfig:
             "seed": self.seed,
             "lucb_prioritization": self.lucb_prioritization,
             "priority_decay": self.priority_decay,
+            "allow_partial_feedback": self.allow_partial_feedback,
         }
 
 

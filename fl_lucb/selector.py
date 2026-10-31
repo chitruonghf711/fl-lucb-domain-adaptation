@@ -234,19 +234,23 @@ class LUCBSelector:
             len(plan.batches) * len({sample.label for batch in plan.batches for sample in batch.samples})
             for plan in plans.values()
         )
-        total_look_count = error_look_count + class_look_count
-        effective_delta = (
-            self.config.lucb_delta / total_look_count
-            if total_look_count > 0
-            else self.config.lucb_delta
+        effective_error_delta = (
+            (self.config.lucb_delta / 2.0) / error_look_count
+            if error_look_count > 0
+            else self.config.lucb_delta / 2.0
+        )
+        effective_class_delta = (
+            (self.config.lucb_delta / 2.0) / class_look_count
+            if class_look_count > 0
+            else self.config.lucb_delta / 2.0
         )
         return {
             "method": "finite_horizon_bonferroni",
             "base_lucb_delta": self.config.lucb_delta,
             "error_interval_look_count": error_look_count,
             "class_interval_look_count": class_look_count,
-            "effective_error_interval_delta": effective_delta,
-            "effective_class_interval_delta": effective_delta,
+            "effective_error_interval_delta": effective_error_delta,
+            "effective_class_interval_delta": effective_class_delta,
         }
 
     def _ordered_client_ids(
@@ -420,9 +424,10 @@ class LUCBSelector:
                 plan.next_unscored(state.evidence_by_client[client_id].scored_batch_indices) is None
                 for client_id, plan in plans.items()
             )
+            is_ok = all_exhausted or (self.config.allow_partial_feedback and not all_exhausted)
             self._update_priority(state, client_ids)
             return self._result(
-                status="ok" if all_exhausted else "partial",
+                status="ok" if is_ok else "partial",
                 stop_reason="all_batches_exhausted" if all_exhausted else "budget_exhausted",
                 model_fingerprint=model_fingerprint,
                 state=state,

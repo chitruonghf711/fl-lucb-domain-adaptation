@@ -129,6 +129,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Allow the legacy token protocol. This is rejected unless feedback-protocol=legacy.",
     )
     parser.add_argument(
+        "--allow-partial-feedback",
+        action="store_true",
+        help="Deliver feedback to identified weak classes even if budget was exhausted before full separation.",
+    )
+    parser.add_argument(
         "--feedback-trigger",
         choices=("auto", "always", "never"),
         default="auto",
@@ -559,6 +564,7 @@ def run_server(args: argparse.Namespace) -> None:
         weak_class_accuracy=args.weak_class_accuracy,
         seed=args.seed,
         lucb_prioritization=args.lucb_prioritization,
+        allow_partial_feedback=bool(args.allow_partial_feedback),
     )
 
     class LUCBTextFedAvg(fl.server.strategy.FedAvg):

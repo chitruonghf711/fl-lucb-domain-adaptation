@@ -75,6 +75,7 @@ DEFAULT_CONFIG: Dict[str, Any] = {
     "priority_decay": 0.5,
     "feedback_protocol": "abstract",
     "allow_raw_feedback": False,
+    "allow_partial_feedback": False,
     "test_force_feedback": False,
 }
 CONFIG: Dict[str, Any] = dict(DEFAULT_CONFIG)
@@ -132,6 +133,7 @@ def selection_config_from_runtime(config: Mapping[str, Any]) -> SelectionConfig:
         seed=int(config["seed"]),
         lucb_prioritization=config["lucb_prioritization"],
         priority_decay=float(config["priority_decay"]),
+        allow_partial_feedback=bool(config.get("allow_partial_feedback", False)),
     )
     selection_config.validate()
     return selection_config
@@ -197,6 +199,8 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
                         default=CONFIG["feedback_protocol"], help="Abstract feedback is the default")
     parser.add_argument("--allow-raw-feedback", action="store_true",
                         help="Required acknowledgement for legacy raw feedback")
+    parser.add_argument("--allow-partial-feedback", action="store_true",
+                        help="Deliver feedback to identified weak classes even if budget was exhausted before full separation")
     parser.add_argument("--max-feedback-per-client", type=int,
                         default=CONFIG["max_feedback_per_client"], help="Maximum explained errors")
     parser.add_argument("--test-force-feedback", action="store_true",
@@ -225,6 +229,7 @@ def apply_args(args: argparse.Namespace) -> None:
         "priority_decay": args.priority_decay,
         "feedback_protocol": args.feedback_protocol,
         "allow_raw_feedback": bool(args.allow_raw_feedback),
+        "allow_partial_feedback": bool(args.allow_partial_feedback),
         "max_feedback_per_client": args.max_feedback_per_client,
         "test_force_feedback": bool(args.test_force_feedback),
     })
@@ -748,6 +753,7 @@ class FeedbackFedAvg(fl.server.strategy.FedAvg):
             if CONFIG["feedback_protocol"] == "legacy":
                 config["reference"] = json.dumps(bundle.get("reference", []), default=_json_default)
             instructions.append((client_proxy, fl.common.FitIns(parameters, config)))
+        self.feedback_storage.clear()
         return instructions
 
     def aggregate_fit(self, server_round: int, results: List[Any], failures: List[Any]) -> Tuple[Optional[fl.common.Parameters], Dict[str, Any]]:
