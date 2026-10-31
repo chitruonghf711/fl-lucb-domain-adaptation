@@ -74,6 +74,39 @@ selected clients/classes, and stop reason. It deliberately excludes raw rows,
 tokens, and pixels. `legacy_full_scan` is for comparison only and preserves the
 previous full-evaluation flow.
 
+---
+
+## Branch Architecture & Research Roles
+
+This repository is organized into distinct branches supporting rigorous empirical comparison:
+
+| Branch | Role in Research | Key Characteristics | Status |
+| :--- | :--- | :--- | :---: |
+| **`main` / `tan`** | **Proposed Method** | **Budget-Bounded Minibatch LUCB Bandit** with $(\epsilon, \delta)$-PAC guarantees, Bonferroni FWER calibration, hierarchical class diagnosis via Wilson intervals, and Abstract Feedback protocol. | ✅ Primary / Production |
+| **`minibatch`** | **Heuristic Baseline** | **Cumulative Minibatch Evaluation** with threshold-based early stopping ($\theta = 0.85$), global budget ceiling ($E = 0.25$), and target data leakage prevention (`--allow-target-leakage False`). | ✅ Verified Baseline |
+
+### Comprehensive Technical Reports (`docs/`)
+
+Detailed design documents, execution workflows, and benchmark guides are available in [`docs/`](docs/):
+- 📄 **[`docs/LUONG_CHAY_CHI_TIET_CAC_BRANCH.md`](docs/LUONG_CHAY_CHI_TIET_CAC_BRANCH.md)**: End-to-end execution workflows, Mermaid sequence/flowchart diagrams, 1-to-1 mapping of LUCB outputs to paper inputs, and 5-tier server savings quantification.
+- 📄 **[`docs/BAO_CAO_BRANCH_TAN_LUCB.md`](docs/BAO_CAO_BRANCH_TAN_LUCB.md)**: Technical report on Algorithm 1 (LUCB), budget bounds, Bonferroni calibration, and Section 3.5 (Hierarchical Class Diagnosis).
+- 📄 **[`docs/BAO_CAO_BRANCH_MINIBATCH.md`](docs/BAO_CAO_BRANCH_MINIBATCH.md)**: Technical report on cumulative minibatch evaluation, threshold stopping, budget ceilings, and data leakage fixes.
+- 📄 **[`docs/SO_SANH_VA_DANH_GIA_THUC_NGHIEM.md`](docs/SO_SANH_VA_DANH_GIA_THUC_NGHIEM.md)**: Comprehensive 3-method comparison matrix, fair benchmark execution commands, and automated benchmark aggregator guide.
+
+### Automated Benchmark Aggregator & LaTeX Generator
+
+Run [`tools/aggregate_benchmark.py`](tools/aggregate_benchmark.py) to automatically ingest experiment logs, profile the 5 execution stages (Eval, XAI, Restore, Synthetic Gen, Local Train), analyze weak client selection dynamics, and export Markdown / publication-grade LaTeX tables:
+
+```bash
+python tools/aggregate_benchmark.py \
+    --exp-dirs logs/exp_fullscan logs/exp_minibatch logs/exp_lucb \
+    --names "Baseline_FullScan" "Minibatch_Heuristic" "Proposed_LUCB" \
+    --output-markdown docs/BENCHMARK_REPORT.md \
+    --output-latex docs/table_benchmark.tex
+```
+
+---
+
 ## What's in this repository
 
 | Track | Feedback signal | Generator | Model | Status |
@@ -86,16 +119,22 @@ previous full-evaluation flow.
 
 ```
 .
-├── docs/                     # GitHub Pages project page
+├── docs/                     # Technical reports, guides & project page
+│   ├── BAO_CAO_BRANCH_TAN_LUCB.md
+│   ├── BAO_CAO_BRANCH_MINIBATCH.md
+│   ├── LUONG_CHAY_CHI_TIET_CAC_BRANCH.md
+│   ├── SO_SANH_VA_DANH_GIA_THUC_NGHIEM.md
 │   ├── index.html
 │   └── assets/
+├── fl_lucb/                  # dependency-free Wilson/LUCB selector and protocol validator
+├── tools/                    # automated benchmark aggregator & LaTeX generator
+│   └── aggregate_benchmark.py
 ├── tabular/                  # SHAP feedback + TVAE generation
 │   ├── server_tabular.py     # FedAvg, evaluation, plateau detection, SHAP feedback
 │   ├── client_tabular.py     # local training, feature restore, TVAE sampling + filtering
 │   ├── dataset/7030/         # server test set + 5 non-IID client shards
 │   ├── tvae_gen.pkl          # pre-trained TVAE generator
 │   └── README.md             # full setup, config and troubleshooting guide
-├── fl_lucb/                  # dependency-free Wilson/LUCB selector and protocol validator
 ├── image/                    # experimental CIFAR-10 feedback implementation
 │   ├── server.py             # LUCB or legacy selection, Grad-CAM patch metadata
 │   ├── client_1.py           # canonical runtime; client_2..client_9 are wrappers
