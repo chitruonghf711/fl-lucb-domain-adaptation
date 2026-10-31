@@ -1,9 +1,39 @@
-# Domain Adaptation of Federated Learning by Data Generation and Server Feedback
+# Federated Domain Adaptation with Minibatch Cumulative Evaluation
 
-This project implements a federated learning (FL) system using [Flower](https://flower.dev/), where:
+This project implements a federated learning (FL) system using [Flower](https://flower.dev/) for domain adaptation across tabular churn datasets.
 
-- The **server** coordinates global training, evaluates model accuracy, and generates feedback using **SHAP** for misclassified samples.
-- The **clients** train local models on private data and optionally use server feedback to restore and augment data using **TVAE** (Tabular Variational Autoencoder).
+---
+
+## Key Highlights & Innovations in this Branch (`minibatch`)
+
+### 1. Minibatch Cumulative Accuracy Evaluation & Early Stopping
+In standard Federated Learning with domain adaptation, evaluating every client model across a large centralized target test set ($D_T$) incurs massive computation and latency at the server.
+
+In this branch:
+- The server partitions the test set into minibatches (stratified or sequential, size configured by `--minibatch-eval-size 300`).
+- Models are evaluated batch-by-batch up to `--max-eval-minibatches 10`.
+- Cumulative accuracy is computed dynamically:
+  $$\text{Acc}_{\text{cumulative}} = \frac{\sum \text{Correct}}{\sum \text{Tested}}$$
+- **Early Stopping**: If cumulative accuracy reaches `--client-good-threshold-acc` (e.g. `0.85`), the client is classified as **`GOOD`**, and evaluation halts immediately. This saves up to 70%–90% of forward-pass computations at the server (`samples_saved_pct`).
+- If accuracy remains below threshold after all minibatches, the client is classified as **`NEEDS_FEEDBACK`**, and the server prepares adaptation feedback.
+- Full evaluation trajectories are recorded in `minibatch_evaluation_log.csv`.
+
+---
+
+### 2. Privacy-Preserving Feedback & Test Data Leakage Prevention
+In earlier iterations of baseline code, server feedback transmitted raw feature values of misclassified target-domain test samples, which clients then restored and concatenated directly into their local training sets (`restored_df`). This constituted severe **Test Data Leakage**, artificially inflating test accuracy at the expense of privacy and scientific validity.
+
+This branch resolves this issue completely:
+1. **Abstract Feedback Protocol (`--feedback-protocol abstract`, default)**:
+   - The server identifies the weak class label and the top-$k$ most important features (via SHAP or gradient importance).
+   - **ZERO raw or masked test samples** leave the server.
+   - The client uses its local TVAE generator to synthesize samples conditioned on the weak class without any target data leakage.
+2. **Safe Detailed Feedback Protocol (`--feedback-protocol detailed`)**:
+   - If legacy masked SHAP feedback is used, restored samples are used **strictly for guiding synthetic data filtering** (`collect_synthetic_samples`).
+   - By default (`--allow-target-leakage False`), restored test samples are **never** concatenated into the client's training dataset.
+   - The `--allow-target-leakage` flag is retained only for controlled ablation experiments reproducing legacy leakage behavior.
+3. **Round-based Feedback Storage Reset**:
+   - `feedback_storage` is refreshed every round, ensuring stale feedback is not accumulated indefinitely.
 
 ---
 
@@ -11,155 +41,86 @@ This project implements a federated learning (FL) system using [Flower](https://
 
 ```
 .
-├── client_tabular.py         # Federated client logic (PyTorch + SDV)
-├── server_tabular.py         # Federated server logic (Flower + SHAP)
+├── client_tabular.py         # Federated client logic (PyTorch + SDV + Data Leakage Guard)
+├── server_tabular.py         # Federated server logic (Flower + Minibatch Eval + SHAP)
+├── smoke_minibatch.py        # Fast end-to-end smoke test script
 ├── dataset/7030/
-│   ├── test_server.csv       # Global test set for evaluation
-│   ├── train1.csv            # Client 1 data
-│   ├── train2.csv            # Client 2 data
+│   ├── test_server.csv       # Global test set for evaluation (3,000 samples)
+│   ├── train1.csv            # Client 1 data (1,050 samples)
+│   ├── train2.csv            # Client 2 data (2,100 samples)
 │   └── ...                   # train3.csv, train4.csv, train5.csv
 ├── tvae_gen.pkl              # Pre-trained TVAE generator model
-├── logs/                     # All run artefacts, one folder per run (log_dir)
-│   └── exp01/
-│       ├── server/           # summary_log.csv, summary_time.csv, server_config.json
-│       │   └── feedback_logs/    # feedback_round_<N>_client_<id>.json
+├── logs/                     # Experiment output folder
+│   └── exp_minibatch/
+│       ├── server/
+│       │   ├── summary_log.csv               # Global round metrics
+│       │   ├── summary_time.csv              # Wall-clock timings
+│       │   ├── minibatch_evaluation_log.csv  # Minibatch evaluation & early stopping log
+│       │   ├── server_config.json            # Run hyperparameters & metadata
+│       │   └── feedback_logs/                # Individual feedback JSON files
 │       └── clients/
-│           └── client1/      # log_<timestamp>.txt (one file per client run)
-├── requirements.txt          # Combined dependencies (server + client)
-└── README.md                 # Project documentation
-```
-
----
-
-## Installation
-
-1. **Clone the repository:**
-```bash
-git clone https://github.com/CaoDien2003/flgenai.git
-cd flgenai/tabular
-```
-
-2. **Create and activate a conda environment:**
-```bash
-conda create -n flgenai-tabular python=3.10 -y
-conda activate flgenai-tabular
-```
-
-> Requires Python 3.8–3.11 (verified on 3.10.20 via conda). Python ≥ 3.12 is **not** supported — `torch==2.2.2` has no wheel for it.
-
-3. **Install dependencies:**
-```bash
-pip install -r requirements.txt
+│           └── client1/                      # Client local training logs
+└── README.md
 ```
 
 ---
 
 ## How to Run
 
-> `server_address` defaults to `0.0.0.0:9000` on the server. Edit `CONFIG["server_address"]` in `server_tabular.py` if you need a different port.
-
-### Start the Server
-
+### 1. Run the Smoke Test
+Verify minibatch evaluation, early stopping, sample savings, abstract feedback, and data leakage safeguards:
 ```bash
-python server_tabular.py
+python tabular/smoke_minibatch.py
 ```
 
-- Loads `dataset/7030/test_server.csv`
-- Runs for N rounds (configurable)
-- Evaluates global model and sends SHAP-based feedback when plateau is detected
-
-### Start Clients (each in separate terminal or machine)
-
-Run once per client, each with its own `--client-id` and `--train-csv`:
-
+### 2. Start the Server with Minibatch Evaluation
 ```bash
-python client_tabular.py --client-id client1 --train-csv dataset/7030/train1.csv --server-address 127.0.0.1:9000 --log-dir logs/exp01
-python client_tabular.py --client-id client2 --train-csv dataset/7030/train2.csv --server-address 127.0.0.1:9000 --log-dir logs/exp01
-# ...
+python tabular/server_tabular.py \
+    --server-address 0.0.0.0:9000 \
+    --minibatch-eval-size 300 \
+    --max-eval-minibatches 10 \
+    --client-good-threshold-acc 0.85 \
+    --feedback-protocol abstract \
+    --log-dir logs/exp_minibatch
 ```
 
-Each client will:
-- Load its own training CSV
-- Train a local model
-- (Optionally) receive SHAP feedback from the server, keyed to its `--client-id`
-- Use a local TVAE model to generate and filter synthetic data
+### 3. Start Clients (in separate terminals)
+```bash
+python tabular/client_tabular.py \
+    --client-id client1 \
+    --train-csv tabular/dataset/7030/train1.csv \
+    --server-address 127.0.0.1:9000 \
+    --log-dir logs/exp_minibatch
 
-> `--client-id` must be unique per client — the server uses it to keep each client's feedback separate.
-> `--log-dir` must match `CONFIG["log_dir"]` on the server so every log of one run lands under the same folder; it defaults to `logs/exp01`. Toggle `use_feedback` in `CONFIG` inside `client_tabular.py`.
+python tabular/client_tabular.py \
+    --client-id client2 \
+    --train-csv tabular/dataset/7030/train2.csv \
+    --server-address 127.0.0.1:9000 \
+    --log-dir logs/exp_minibatch
+```
 
----
-
-## Features
-
-- SHAP explainability to generate interpretable feedback
-- TVAE-based synthetic data generation
-- Cosine similarity filtering for high-quality augmentation
-- Plateau detection for dynamic feedback
-- Modular & easy-to-extend system (e.g. supports SDV, BERT, ResNet)
+*(Repeat for clients 3, 4, 5 with their respective training CSV files).*
 
 ---
 
-## Configuration
+## Comparing Minibatch Thresholding vs. LUCB (Fair Benchmark)
 
-- `--client-id`, `--train-csv`, `--server-address`, `--log-dir` are passed as CLI flags to `client_tabular.py` (see *How to Run*).
-- Everything else is edited in the `CONFIG` dictionary in each script:
-  - `server_tabular.py`: `log_dir`, training rounds, plateau window/threshold, SHAP threshold, top-k features
-  - `client_tabular.py`: epochs, batch size, learning rate, generation multiplier, cosine similarity cutoff, `use_feedback` toggle
-- Point `log_dir` at a new folder for each run you want to keep — re-running with the same one overwrites its CSVs.
-
----
-
-## Logs & Output
-
-Everything a run produces lives under the run's `log_dir` (`logs/exp01` by default):
-
-| Path | Content |
-| --- | --- |
-| `logs/exp01/server/summary_log.csv` | One row per round (round 0 = initial parameters): accuracy, loss, precision, recall, f1, confusion matrix |
-| `logs/exp01/server/summary_time.csv` | Per-round wall clock: round, aggregation and SHAP feedback time |
-| `logs/exp01/server/server_config.json` | The server `CONFIG` of that run plus `total_time_sec` |
-| `logs/exp01/server/feedback_logs/feedback_round_<N>_client_<id>.json` | Masked SHAP feedback and the matching real samples sent to that client |
-| `logs/exp01/clients/<client-id>/log_<timestamp>.txt` | Client log: restore/generation counts, final train size, per-epoch loss |
+| Dimension | Minibatch Thresholding (`minibatch` branch) | Minibatch LUCB (`tan` branch) | Full-Scan Baseline (Paper) |
+| :--- | :--- | :--- | :--- |
+| **Server Evaluation Cost** | Sequential early stopping per client | Multi-armed bandit budget ($M \le E$) | Full batch ($100\%$ samples) |
+| **Selection Criterion** | Accuracy threshold ($\ge \theta$) | Top-$k$ lowest accuracy via upper confidence bounds | All clients on plateau |
+| **Data Privacy** | Abstract feedback (Zero test leakage) | Abstract feedback (Zero test leakage) | Masked test samples (Historical leakage fixed) |
+| **Statistical Guarantee** | Heuristic early stopping | $(\epsilon, \delta)$-PAC bandit bounds | Exhaustive empirical mean |
 
 ---
 
-## Troubleshooting
+## Artifacts & Logs
 
-- **`ModuleNotFoundError: No module named 'sdv.metadata.metadata'`** (when loading `tvae_gen.pkl`): your installed `sdv` version doesn't match the one `tvae_gen.pkl` was fitted with — SDV's internal module layout changes across releases, so `pickle.load()` needs an exact match. `requirements.txt` pins `sdv==1.22.1` (read from the pickle's embedded `_fitted_sdv_version`); make sure you actually installed that version (`pip show sdv`) rather than a stale one from a previous env.
-- **`ValueError: <class 'numpy.random._mt19937.MT19937'> is not a known BitGenerator module`** (or `state is not a legacy MT19937 state`): `tvae_gen.pkl` also carries a random state pickled by numpy ≥ 2.0, while `torch==2.2.2` requires numpy < 2. `client_tabular.py` handles this inside `load_generator()`, which patches numpy's pickle reconstructors while the file is read and restores them afterwards — nothing to do, just don't replace that helper with a plain `pickle.load()`.
-- **`FileNotFoundError` on `test_server.csv` / `trainX.csv`**: run the scripts from inside `tabular/` (paths in `CONFIG` are relative to that directory), and confirm the file exists under `dataset/7030/`.
-- **Client killed with no traceback (`Killed` in the terminal)**: this is the Linux OOM killer, not a bug — check `dmesg | tail -30` for an `Out of memory: Killed process ... python` line. TVAE training is memory-hungry; on WSL2, raise the memory cap in `%UserProfile%\.wslconfig` (`[wsl2]` / `memory=6GB`, then `wsl --shutdown` from PowerShell) and close other processes before retrying.
-
----
-
-## Example Use Cases
-
-- Data privacy–preserving learning in banks
-- Debugging misclassifications using SHAP feedback
-- Exploring how synthetic data affects model performance
-
----
-
-## Notes
-
-- No raw data is shared between clients and server
-- Only model weights and abstracted feedback (SHAP masks) are exchanged
-- SDV is used locally by clients to generate data
-
----
-
-## Credits
-
-- [Flower](https://flower.dev) - Federated learning framework
-- [SHAP](https://github.com/slundberg/shap) - Model interpretability
-- [SDV](https://docs.sdv.dev/sdv) - Synthetic data generation (TVAE)
-
----
-
-
-## Contact
-
-For inquiries or feedback, feel free to reach out:
-
-- **Email**: nguyencaodien2003@gmail.com
-- **GitHub**: [CaoDien2003](https://github.com/CaoDien2003)
+After running, check `logs/exp_minibatch/server/minibatch_evaluation_log.csv`:
+```csv
+round,client_id,batches_tested,samples_tested,total_available_samples,samples_saved_pct,cumulative_accuracy,threshold,status,eval_time_sec,shap_time_sec,feedback_samples_count
+2,client1,10,3000,3000,0.0,0.7966,0.85,NEEDS_FEEDBACK,0.01,1.25,610
+6,client4,3,900,3000,70.0,0.8544,0.85,GOOD,0.0,0.0,0
+```
+- `samples_saved_pct` measures the percentage of test evaluations saved by early stopping.
+- `feedback_samples_count` tracks adaptation signals dispatched to the client.

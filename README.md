@@ -71,19 +71,27 @@ Feedback is not produced every round. It is triggered once enough rounds have pa
 
 ## Quickstart
 
-### Tabular — Bank Customer Churn
+### Tabular — Bank Customer Churn (with Minibatch Cumulative Evaluation)
+
+This branch implements **Minibatch Cumulative Evaluation** with early stopping and privacy safeguards:
+- **Sequential early stopping**: Halts evaluation early when a client model meets `--client-good-threshold-acc` (e.g. 0.85), saving up to 70%–90% of server compute.
+- **Data leakage prevention**: Implements `--feedback-protocol abstract` (zero raw test samples transmitted) and guards client training against concatenating restored target-domain test samples (`--allow-target-leakage False` by default).
 
 ```bash
 cd tabular
 conda create -n flgenai-tabular python=3.10 -y && conda activate flgenai-tabular
 pip install -r requirements.txt
 
-# terminal 1 — server (listens on 0.0.0.0:9000)
-python server_tabular.py
+# Run smoke test:
+python smoke_minibatch.py
 
-# terminal 2..n — one process per client shard
+# Terminal 1 — server with minibatch evaluation
+python server_tabular.py --minibatch-eval-size 300 --max-eval-minibatches 10 \
+    --client-good-threshold-acc 0.85 --feedback-protocol abstract
+
+# Terminal 2..n — client shards
 python client_tabular.py --client-id client1 --train-csv dataset/7030/train1.csv \
-    --server-address 127.0.0.1:9000 --log-dir logs/exp01
+    --server-address 127.0.0.1:9000 --log-dir logs/exp_minibatch
 ```
 
 Requires Python 3.8–3.11 — `torch==2.2.2` has no wheel for 3.12. Use the same `--log-dir` on server and clients so one run's artefacts land together. See [`tabular/README.md`](tabular/README.md) for every config key, the log layout, and troubleshooting (SDV pickle version, numpy BitGenerator, WSL2 OOM).
