@@ -231,12 +231,13 @@ def parse_selection_insights(exp_dir: str) -> Dict[str, Any]:
         except Exception:
             pass
 
-    # 2. Try audits/*.json (LUCB Branch)
-    audit_files = glob.glob(os.path.join(exp_dir, "server/audits/*.json"))
-    if not audit_files:
-        audit_files = glob.glob(os.path.join(exp_dir, "audits/*.json"))
-        if not audit_files:
-            audit_files = glob.glob(os.path.join(exp_dir, "*/audits/*.json"))
+    # 2. Try audits/*.json (LUCB Branch: tabular, image, or text)
+    audit_files = []
+    for pattern in ["server/audits/*.json", "audits/*.json", "audit/*.json", "server/audit/*.json", "*/*audit*.json", "*audit*.json"]:
+        matches = glob.glob(os.path.join(exp_dir, pattern))
+        if matches:
+            audit_files = matches
+            break
 
     if audit_files:
         try:
