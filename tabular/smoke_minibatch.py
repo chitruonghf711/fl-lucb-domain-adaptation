@@ -111,6 +111,23 @@ def run_smoke_test():
     assert res_low["samples_saved_pct"] == 0.0, f"Expected 0% saved, got {res_low['samples_saved_pct']}"
     print("✓ Full evaluation for NEEDS_FEEDBACK model PASSED\n")
 
+    # 3.5 Test Budget Ceiling Mechanism
+    res_budget = evaluate_model_minibatch(
+        model=low_model,
+        minibatches=batches_stratified,
+        threshold=0.85,
+        max_minibatches=5,
+        total_available_samples=n_samples,
+        budget_remaining=350  # Cap at 350 samples (< 1000 total)
+    )
+    print(f"Budget Capped Evaluation: batches_tested={res_budget['batches_tested']}, "
+          f"samples_tested={res_budget['samples_tested']}, status={res_budget['status']}, "
+          f"budget_exhausted={res_budget['budget_exhausted']}")
+    assert res_budget["samples_tested"] <= 350, f"Exceeded budget ceiling! Tested {res_budget['samples_tested']}"
+    assert res_budget["budget_exhausted"] is True, "Expected budget_exhausted to be True"
+    assert res_budget["status"] == "BUDGET_EXHAUSTED", f"Expected BUDGET_EXHAUSTED, got {res_budget['status']}"
+    print("✓ Global Budget Ceiling mechanism PASSED\n")
+
     # 4. Test Abstract Feedback Generation (Zero Data Leakage)
     feature_names = [f"feat_{i}" for i in range(n_features)]
     abstract_fb = compute_abstract_feedback(

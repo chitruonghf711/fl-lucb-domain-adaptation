@@ -79,6 +79,9 @@ CONFIG = {
     "client_good_metric": "accuracy",
     "stratified_minibatch": True,
     "feedback_protocol": "abstract",  # "abstract" (privacy-preserving) or "detailed" (legacy)
+    # Global budget ceiling settings
+    "server_budget_fraction": 0.25,   # Global budget ceiling: max 25% of server total evaluation capacity
+    "allow_budget_ceiling": True,     # True = enforce global budget ceiling E; False = unlimited
 }
 
 CONFIG["server_log_dir"] = os.path.join(CONFIG["log_dir"], "server")
@@ -191,17 +194,19 @@ def evaluate_model_minibatch(
     minibatches: List[Tuple[torch.Tensor, torch.Tensor]],
     threshold: float = 0.85,
     max_minibatches: int = 10,
-    total_available_samples: Optional[int] = None
+    total_available_samples: Optional[int] = None,
+    budget_remaining: Optional[int] = None
 ) -> Dict[str, Any]:
-    """Evaluate a client model over minibatches with cumulative accuracy and early stopping.
+    """Evaluate a client model over minibatches with cumulative accuracy, early stopping, and budget cap.
 
     Returns:
         batches_tested: Number of minibatches evaluated before stopping.
         samples_tested: Number of samples evaluated.
         cumulative_accuracy: Final cumulative accuracy over tested batches.
-        status: "GOOD" if threshold met, else "NEEDS_FEEDBACK".
-        samples_saved_pct: Percentage of total available samples saved by early stopping.
+        status: "GOOD" if threshold met, "BUDGET_EXHAUSTED" if budget ran out, else "NEEDS_FEEDBACK".
+        samples_saved_pct: Percentage of total available samples saved.
         misclassified_samples: List of (x_sample, true_label, pred_label).
+        budget_exhausted: True if evaluation halted due to budget ceiling.
     """
     model.eval()
     if total_available_samples is None:
@@ -213,9 +218,23 @@ def evaluate_model_minibatch(
     misclassified_samples: List[Tuple[torch.Tensor, int, int]] = []
     status = "NEEDS_FEEDBACK"
     cumulative_acc = 0.0
+    budget_exhausted = False
 
     eval_batches = minibatches[:max_minibatches]
     for batch_x, batch_y in eval_batches:
+        if budget_remaining is not None and budget_remaining <= 0:
+            budget_exhausted = True
+            break
+
+        # If batch is larger than remaining budget, truncate batch to remaining budget
+        if budget_remaining is not None and len(batch_y) > budget_remaining:
+            if budget_remaining < 10:  # If fewer than 10 samples left, halt cleanly
+                budget_exhausted = True
+                break
+            batch_x = batch_x[:budget_remaining]
+            batch_y = batch_y[:budget_remaining]
+            budget_exhausted = True
+
         batches_tested += 1
         with torch.no_grad():
             outputs = model(batch_x).squeeze()
@@ -227,6 +246,8 @@ def evaluate_model_minibatch(
 
         cumulative_correct += batch_correct
         cumulative_tested += len(targets)
+        if budget_remaining is not None:
+            budget_remaining -= len(targets)
 
         for x_val, y_true, y_pred in zip(batch_x, targets, preds):
             if y_true.item() != y_pred.item():
@@ -237,6 +258,12 @@ def evaluate_model_minibatch(
         if cumulative_acc >= threshold:
             status = "GOOD"
             break
+
+        if budget_exhausted:
+            break
+
+    if status != "GOOD" and budget_exhausted and batches_tested < max_minibatches:
+        status = "BUDGET_EXHAUSTED"
 
     samples_saved_pct = round(
         100.0 * max(0, total_available_samples - cumulative_tested) / max(1, total_available_samples), 2
@@ -250,7 +277,8 @@ def evaluate_model_minibatch(
         "threshold": threshold,
         "status": status,
         "samples_saved_pct": samples_saved_pct,
-        "misclassified_samples": misclassified_samples
+        "misclassified_samples": misclassified_samples,
+        "budget_exhausted": budget_exhausted
     }
 
 
@@ -533,6 +561,18 @@ class MinibatchFeedbackFedAvg(fl.server.strategy.FedAvg):
 
         if should_eval:
             print(f"[SERVER] Plateau or forced evaluation active in round {server_round}. Running minibatch evaluation...")
+            num_reporting_clients = len(results)
+            total_server_capacity = num_reporting_clients * self.total_available_samples
+            if CONFIG.get("allow_budget_ceiling", True):
+                budget_fraction = CONFIG.get("server_budget_fraction", 0.25)
+                global_budget_ceiling = int(budget_fraction * total_server_capacity)
+            else:
+                global_budget_ceiling = total_server_capacity
+
+            total_server_samples_evaluated = 0
+            print(f"[SERVER] Global Budget Ceiling: {global_budget_ceiling} samples "
+                  f"({CONFIG.get('server_budget_fraction', 0.25)*100:.1f}% of total capacity {total_server_capacity})")
+
             for client_proxy, fit_res in results:
                 client_id = fit_res.metrics.get("client_id", client_proxy.cid)
                 self.client_id_map[client_proxy.cid] = client_id
@@ -540,20 +580,42 @@ class MinibatchFeedbackFedAvg(fl.server.strategy.FedAvg):
                 client_model = SimpleNN(self.input_size)
                 set_parameters(client_model, fl.common.parameters_to_ndarrays(fit_res.parameters))
 
+                budget_remaining = max(0, global_budget_ceiling - total_server_samples_evaluated)
+                if budget_remaining <= 0:
+                    print(f"[SERVER] Global Budget Ceiling Exhausted! Halting evaluation for Client {client_id}.")
+                    log_entry = {
+                        "round": server_round,
+                        "client_id": client_id,
+                        "batches_tested": 0,
+                        "samples_tested": 0,
+                        "total_available_samples": self.total_available_samples,
+                        "samples_saved_pct": 100.0,
+                        "cumulative_accuracy": 0.0,
+                        "threshold": CONFIG["client_good_threshold_acc"],
+                        "status": "BUDGET_EXHAUSTED",
+                        "eval_time_sec": 0.0,
+                        "shap_time_sec": 0.0,
+                        "feedback_samples_count": 0
+                    }
+                    self.minibatch_logs.append(log_entry)
+                    continue
+
                 eval_start = time.time()
                 eval_res = evaluate_model_minibatch(
                     model=client_model,
                     minibatches=self.minibatches,
                     threshold=CONFIG["client_good_threshold_acc"],
                     max_minibatches=CONFIG["max_eval_minibatches"],
-                    total_available_samples=self.total_available_samples
+                    total_available_samples=self.total_available_samples,
+                    budget_remaining=budget_remaining
                 )
                 eval_time = time.time() - eval_start
+                total_server_samples_evaluated += eval_res["samples_tested"]
 
                 shap_time = 0.0
                 feedback_count = 0
 
-                if eval_res["status"] == "NEEDS_FEEDBACK":
+                if eval_res["status"] in ("NEEDS_FEEDBACK", "BUDGET_EXHAUSTED") and eval_res["misclassified_samples"]:
                     start_fb = time.time()
                     if CONFIG["feedback_protocol"] == "abstract":
                         feedback = compute_abstract_feedback(
@@ -607,6 +669,9 @@ class MinibatchFeedbackFedAvg(fl.server.strategy.FedAvg):
                 print(f"[SERVER] Client {client_id} Minibatch Eval: {eval_res['batches_tested']}/{CONFIG['max_eval_minibatches']} batches "
                       f"({eval_res['samples_tested']}/{eval_res['total_available_samples']} samples, saved {eval_res['samples_saved_pct']}%) "
                       f"Acc: {eval_res['cumulative_accuracy']:.4f} -> {eval_res['status']}")
+
+            CONFIG["global_budget_ceiling"] = global_budget_ceiling
+            CONFIG["total_server_samples_evaluated"] = total_server_samples_evaluated
 
         set_parameters(self.model, aggregated_weights)
         self.time_log.append({
@@ -686,6 +751,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--shap-threshold", type=float, default=CONFIG["shap_threshold"])
     parser.add_argument("--top-k-features", type=int, default=CONFIG["top_k_features"])
     parser.add_argument("--max-feedback-per-client", type=int, default=CONFIG["max_feedback_per_client"])
+    parser.add_argument("--budget-fraction", type=float, default=CONFIG["server_budget_fraction"],
+                        help="Global server budget ceiling as a fraction of total evaluation capacity (default: 0.25)")
+    parser.add_argument("--no-budget-ceiling", action="store_true", default=False,
+                        help="Disable global budget ceiling (evaluates without global sample cap)")
     return parser.parse_args()
 
 
@@ -709,6 +778,13 @@ def main() -> None:
     CONFIG["shap_threshold"] = args.shap_threshold
     CONFIG["top_k_features"] = args.top_k_features
     CONFIG["max_feedback_per_client"] = args.max_feedback_per_client
+
+    if args.no_budget_ceiling:
+        CONFIG["allow_budget_ceiling"] = False
+        CONFIG["server_budget_fraction"] = 1.0
+    else:
+        CONFIG["allow_budget_ceiling"] = True
+        CONFIG["server_budget_fraction"] = args.budget_fraction
 
     CONFIG["server_log_dir"] = os.path.join(CONFIG["log_dir"], "server")
     CONFIG["server_feedback_dir"] = os.path.join(CONFIG["server_log_dir"], "feedback_logs")

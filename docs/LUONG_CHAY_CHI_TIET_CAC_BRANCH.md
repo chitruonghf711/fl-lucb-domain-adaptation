@@ -99,7 +99,20 @@ Thay vì forward-pass toàn bộ $3.000$ mẫu cùng lúc, server đánh giá tu
 
 ---
 
-### 1.4. Bảng Kết quả Minh họa Thực tế từ Log của Branch `minibatch`
+### 1.4. Bổ sung: Cơ chế Trần Ngân Sách Toàn Cục (Global Budget Ceiling $E$)
+Để khắc phục rủi ro trong trường hợp xấu nhất (Worst-case) khi **toàn bộ các client đều yếu**, server ở branch `minibatch` đã được trang bị **Trần Ngân Sách Toàn Cục**:
+- **Công thức tính trần ngân sách $E$:**
+  $$E = \lfloor \text{server\_budget\_fraction} \times (K \times |D_T|) \rfloor$$
+  Với $K=5$ client và $|D_T|=3.000$, nếu chọn `--budget-fraction 0.25`, trần ngân sách toàn server là $E = 0.25 \times 15.000 = \mathbf{3.750 \text{ mẫu}}$.
+- **Cơ chế kiểm soát:**
+  Trong suốt quá trình duyệt qua các client, server theo dõi biến cộng dồn `total_server_samples_evaluated`.
+  - Mỗi khi chuẩn bị kiểm tra client tiếp theo, server tính `budget_remaining = max(0, E - total_server_samples_evaluated)`.
+  - Nếu `budget_remaining <= 0`, server **ngay lập tức dừng toàn bộ quá trình đánh giá (Budget Ceiling Hit)**.
+  - Các client chưa kịp đánh giá hoặc bị ngắt giữa chừng được gắn trạng thái `status = "BUDGET_EXHAUSTED"`, bảo vệ máy chủ không bao giờ bị quá tải vượt quá $E$.
+
+---
+
+### 1.5. Bảng Kết quả Minh họa Thực tế từ Log của Branch `minibatch`
 
 | Client | Batches Tested | Samples Tested | Cumulative Acc | Ngưỡng $\theta$ | Trạng thái (Status) | Samples Saved (%) | Thời gian SHAP |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |

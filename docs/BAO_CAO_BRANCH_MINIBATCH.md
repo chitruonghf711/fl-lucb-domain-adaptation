@@ -50,6 +50,12 @@ Tại [`tabular/server_tabular.py`](file:///Users/truongledanchi/.gemini/antigra
     - Nếu duyệt hết 10 batch mà $\text{Acc}_{\text{cumulative}} < \text{threshold}$:
       - Gán trạng thái `status = "NEEDS_FEEDBACK"`.
       - Kích hoạt tạo feedback thích nghi cho client.
+* **Cơ chế Trần Ngân Sách Toàn Cục (Global Budget Ceiling $E$):**
+  - Khắc phục nguy cơ cạn kiệt tài nguyên khi toàn bộ client đều yếu trong cùng một round.
+  - Tham số: `--budget-fraction 0.25` (mặc định $25\%$ tổng năng lực $K \times |D_T|$).
+  - Với $K=5$ client và $|D_T|=3.000$ mẫu, trần ngân sách cứng của toàn server là:
+    $$E = 0.25 \times 15.000 = \mathbf{3.750 \text{ mẫu}}$$
+  - Trong quá trình duyệt tuần tự các client, server theo dõi tổng số mẫu đã đánh giá `total_server_samples_evaluated`. Ngay khi chi phí đạt $E$, server lập tức dừng toàn bộ (Budget Ceiling Hit), gắn trạng thái `status = "BUDGET_EXHAUSTED"` cho các client còn lại, bảo vệ server không bị quá tải.
 * **Ghi nhận Log Thực nghiệm:**
   - Tự động ghi lại từng lượt đánh giá vào `minibatch_evaluation_log.csv` với các cột chuẩn:
     `round, client_id, batches_tested, samples_tested, total_available_samples, samples_saved_pct, cumulative_accuracy, threshold, status, eval_time_sec, shap_time_sec, feedback_samples_count`.

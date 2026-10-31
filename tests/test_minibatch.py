@@ -105,6 +105,26 @@ class MinibatchEvaluationTests(unittest.TestCase):
         self.assertEqual(res["samples_saved_pct"], 0.0)
         self.assertEqual(len(res["misclassified_samples"]), 400)
 
+    def test_evaluation_stops_at_budget_ceiling(self):
+        class PredictOneModel(nn.Module):
+            def forward(self, x):
+                return torch.full((len(x), 1), 10.0)
+
+        model = PredictOneModel()
+        res = evaluate_model_minibatch(
+            model=model,
+            minibatches=self.batches,
+            threshold=0.85,
+            max_minibatches=5,
+            total_available_samples=self.n_samples,
+            budget_remaining=250  # Only allow 250 samples
+        )
+
+        self.assertEqual(res["status"], "BUDGET_EXHAUSTED")
+        self.assertLessEqual(res["samples_tested"], 250)
+        self.assertTrue(res["budget_exhausted"])
+        self.assertLess(res["batches_tested"], 5)
+
 
 class FeedbackAndDataLeakageTests(unittest.TestCase):
     def test_abstract_feedback_does_not_contain_raw_samples(self):
