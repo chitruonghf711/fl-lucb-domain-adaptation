@@ -32,6 +32,7 @@ import json
 import logging
 import os
 import pickle
+import time
 import warnings
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
@@ -276,7 +277,8 @@ class FLClient(fl.client.NumPyClient):
         train_df: pd.DataFrame,
         restore_synthesizer: Any,
         generator: Any,
-        allow_target_leakage: bool = False
+        allow_target_leakage: bool = False,
+        client_log_dir: Optional[str] = None
     ):
         self.client_id = client_id
         self.model = model
@@ -285,6 +287,9 @@ class FLClient(fl.client.NumPyClient):
         self.generator = generator
         self.allow_target_leakage = allow_target_leakage
         self.train_data = train_df.copy()
+        self.client_log_dir = client_log_dir or CONFIG.get("client_log_dir", f"logs/clients/{client_id}")
+        self.time_logs: List[Dict[str, Any]] = []
+        self.round_counter = 0
 
     def get_parameters(self, config: Dict[str, Any]) -> List[Any]:
         return [val.cpu().numpy() for val in self.model.state_dict().values()]
@@ -295,7 +300,22 @@ class FLClient(fl.client.NumPyClient):
             state_dict[key] = torch.tensor(value)
         self.model.load_state_dict(state_dict)
 
+    def save_time_summary(self) -> None:
+        """Persist per-round client execution timing to CSV."""
+        if not self.time_logs:
+            return
+        os.makedirs(self.client_log_dir, exist_ok=True)
+        csv_path = os.path.join(self.client_log_dir, "client_time_summary.csv")
+        pd.DataFrame(self.time_logs).to_csv(csv_path, index=False)
+
     def fit(self, parameters: List[Any], config: Dict[str, Any]) -> Tuple[List[Any], int, Dict[str, Any]]:
+        t_fit_start = time.time()
+        self.round_counter += 1
+        current_round = config.get("server_round", self.round_counter)
+        restore_time = 0.0
+        gen_time = 0.0
+        gen_samples_count = 0
+
         self.set_parameters(parameters)
 
         feedback_raw = config.get("feedback", "{}")
@@ -337,6 +357,7 @@ class FLClient(fl.client.NumPyClient):
                 required = int(CONFIG["gen_multiplier_fixed"] * len(self.train_df))
                 batch_size = max(required * 2, int(CONFIG["gen_multiplier"] * len(self.train_df)))
 
+                t_gen_start = time.time()
                 total_selected = pd.DataFrame()
                 if self.generator is not None:
                     for _ in range(CONFIG["max_gen_attempts"]):
@@ -351,6 +372,8 @@ class FLClient(fl.client.NumPyClient):
                             break
 
                 selected_samples = total_selected.head(required) if not total_selected.empty else pd.DataFrame()
+                gen_time = time.time() - t_gen_start
+                gen_samples_count = len(selected_samples)
                 logging.info(f"[ABSTRACT] Selected {len(selected_samples)} synthetic samples for weak class {weak_label}")
                 print(f"[CLIENT] Generated {len(selected_samples)} synthetic samples for weak class {weak_label} (Target leakage: 0)")
 
@@ -366,11 +389,16 @@ class FLClient(fl.client.NumPyClient):
                 fb_df = feedback_to_dataframe(shap_entries, CONFIG["target_column"])
 
                 # Restore missing features using TVAE
+                t_res_start = time.time()
                 restored_df = restore_missing_values(fb_df, self.restore_synthesizer)
+                restore_time = time.time() - t_res_start
                 logging.info(f"NaN before restore: {fb_df.isna().sum().sum()} | after restore: {restored_df.isna().sum().sum()}")
 
                 # Select synthetic samples cosine-similar to restored feedback
+                t_gen_start = time.time()
                 selected_samples = collect_synthetic_samples(self.generator, restored_df, len(self.train_df))
+                gen_time = time.time() - t_gen_start
+                gen_samples_count = len(selected_samples)
 
                 # PREVENT TARGET DOMAIN TEST DATA LEAKAGE:
                 if self.allow_target_leakage:
@@ -384,13 +412,32 @@ class FLClient(fl.client.NumPyClient):
         else:
             logging.info("Generating fixed synthetic data without feedback")
             num_gen = int(CONFIG["gen_multiplier_fixed"] * len(self.train_df))
+            t_gen_start = time.time()
             gen_fixed = self.generator.sample(num_gen) if self.generator is not None else pd.DataFrame()
+            gen_time = time.time() - t_gen_start
+            gen_samples_count = len(gen_fixed)
             self.train_data = pd.concat([self.train_df, gen_fixed], ignore_index=True)
 
         logging.info(f"Final train size: Original={len(self.train_df)} | Restored={len(restored_df)} "
                      f"| Synthetic={len(selected_samples)} | Total={len(self.train_data)}")
 
+        t_train_start = time.time()
         num_examples = train_local_model(self.model, self.train_data)
+        train_time = time.time() - t_train_start
+        total_fit_time = time.time() - t_fit_start
+
+        # Record client round execution metrics
+        self.time_logs.append({
+            "round": current_round,
+            "total_fit_time_sec": round(total_fit_time, 2),
+            "restore_time_sec": round(restore_time, 2),
+            "gen_time_sec": round(gen_time, 2),
+            "train_time_sec": round(train_time, 2),
+            "train_samples": num_examples,
+            "gen_samples": gen_samples_count
+        })
+        self.save_time_summary()
+
         logging.info("=== ROUND COMPLETED ===\n")
         return self.get_parameters(config), num_examples, {"client_id": self.client_id}
 
@@ -434,7 +481,8 @@ def main() -> None:
         train_df=train_df,
         restore_synthesizer=restore_synthesizer,
         generator=generator,
-        allow_target_leakage=CONFIG["allow_target_leakage"]
+        allow_target_leakage=CONFIG["allow_target_leakage"],
+        client_log_dir=CONFIG["client_log_dir"]
     )
 
     print(f"[CLIENT] Connecting to {CONFIG['server_address']}...")

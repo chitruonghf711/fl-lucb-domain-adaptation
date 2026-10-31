@@ -570,6 +570,7 @@ class MinibatchFeedbackFedAvg(fl.server.strategy.FedAvg):
                 global_budget_ceiling = total_server_capacity
 
             total_server_samples_evaluated = 0
+            total_server_eval_time = 0.0
             print(f"[SERVER] Global Budget Ceiling: {global_budget_ceiling} samples "
                   f"({CONFIG.get('server_budget_fraction', 0.25)*100:.1f}% of total capacity {total_server_capacity})")
 
@@ -611,6 +612,7 @@ class MinibatchFeedbackFedAvg(fl.server.strategy.FedAvg):
                 )
                 eval_time = time.time() - eval_start
                 total_server_samples_evaluated += eval_res["samples_tested"]
+                total_server_eval_time += eval_time
 
                 shap_time = 0.0
                 feedback_count = 0
@@ -678,7 +680,10 @@ class MinibatchFeedbackFedAvg(fl.server.strategy.FedAvg):
             "round": server_round,
             "round_time_sec": round(time.time() - self.round_start, 2),
             "aggregate_time_sec": round(agg_time, 2),
-            "feedback_time_sec": round(fb_time, 2)
+            "eval_time_sec": round(total_server_eval_time, 2) if should_eval else 0.0,
+            "feedback_time_sec": round(fb_time, 2),
+            "samples_tested": total_server_samples_evaluated if should_eval else 0,
+            "samples_saved_pct": round(100.0 * max(0, total_server_capacity - total_server_samples_evaluated) / max(1, total_server_capacity), 2) if should_eval else 0.0
         })
 
         self.save_reports(time.time() - self.round_start)

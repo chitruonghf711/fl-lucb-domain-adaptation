@@ -212,6 +212,46 @@ class FeedbackAndDataLeakageTests(unittest.TestCase):
         client_leaky.fit(client_leaky.get_parameters({}), config)
         self.assertEqual(len(client_leaky.train_data), len(train_df) + 5)
 
+    def test_client_time_summary_tracking(self):
+        import tempfile
+        import os
+
+        n_features = 3
+        train_df = pd.DataFrame({
+            "f1": [0.1, 0.2, 0.3],
+            "f2": [0.4, 0.5, 0.6],
+            "f3": [0.7, 0.8, 0.9],
+            "Exited": [0, 1, 0]
+        })
+        model = SimpleNN(n_features)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            client = FLClient(
+                client_id="client_timing_test",
+                model=model,
+                train_df=train_df,
+                restore_synthesizer=None,
+                generator=None,
+                client_log_dir=tmp_dir
+            )
+            config = {"server_round": 1}
+            client.fit(client.get_parameters({}), config)
+
+            self.assertEqual(len(client.time_logs), 1)
+            log = client.time_logs[0]
+            self.assertEqual(log["round"], 1)
+            self.assertIn("total_fit_time_sec", log)
+            self.assertIn("train_time_sec", log)
+            self.assertIn("gen_time_sec", log)
+            self.assertIn("restore_time_sec", log)
+            self.assertEqual(log["train_samples"], 3)
+
+            csv_file = os.path.join(tmp_dir, "client_time_summary.csv")
+            self.assertTrue(os.path.exists(csv_file))
+            saved_df = pd.read_csv(csv_file)
+            self.assertEqual(len(saved_df), 1)
+            self.assertEqual(saved_df["round"].iloc[0], 1)
+
 
 if __name__ == "__main__":
     unittest.main()
